@@ -1,8 +1,8 @@
-import { createClient } from '@/lib/supabase/client'
+import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import type { Habit, HabitLog } from '@/types/domain'
 
 export async function getActiveHabits(userId: string): Promise<Habit[]> {
-  const supabase = createClient()
+  const supabase = getSupabaseBrowserClient()
   const { data, error } = await supabase
     .from('habits')
     .select('*')
@@ -15,7 +15,7 @@ export async function getActiveHabits(userId: string): Promise<Habit[]> {
 }
 
 export async function getAllHabits(userId: string): Promise<Habit[]> {
-  const supabase = createClient()
+  const supabase = getSupabaseBrowserClient()
   const { data, error } = await supabase
     .from('habits')
     .select('*')
@@ -31,7 +31,7 @@ export async function getHabitLogs(
   startDate: string,
   endDate: string
 ): Promise<HabitLog[]> {
-  const supabase = createClient()
+  const supabase = getSupabaseBrowserClient()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('*')
