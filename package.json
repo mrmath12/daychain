@@ -13,11 +13,11 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
+      "npx eslint --fix",
+      "npx prettier --write"
     ],
     "*.{js,jsx,json,md,css}": [
-      "prettier --write"
+      "npx prettier --write"
     ]
   },
   "dependencies": {
@@ -65,6 +65,7 @@
     "jest-environment-jsdom": "^30.3.0",
     "lint-staged": "^16.4.0",
     "postcss": "^8",
+    "prettier": "^3.8.3",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5"
