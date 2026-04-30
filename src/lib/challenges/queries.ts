@@ -1,11 +1,11 @@
-import { createClient } from '@/lib/supabase/client'
+import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import type { Challenge, ChallengeStatus } from '@/types/domain'
 
 export async function getChallenges(
   userId: string,
   status?: ChallengeStatus
 ): Promise<Challenge[]> {
-  const supabase = createClient()
+  const supabase = getSupabaseBrowserClient()
   let query = supabase.from('challenges').select('*').eq('user_id', userId)
 
   if (status) {

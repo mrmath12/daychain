@@ -1,18 +1,26 @@
-import { format, getISODay, parseISO } from 'date-fns'
+import {
+  format,
+  parseISO,
+  getISODay,
+  subDays,
+  addDays,
+  isAfter,
+  isBefore,
+  differenceInDays,
+} from 'date-fns'
 
-export function toLocalDateString(date: Date): string {
-  return format(date, 'yyyy-MM-dd')
+export function getTodayLocalDate(): string {
+  return format(new Date(), 'yyyy-MM-dd')
 }
 
-export function fromLocalDateString(dateStr: string): Date {
-  return parseISO(dateStr)
-}
-
-// Returns ISO day of week: 1=Monday … 7=Sunday
-export function getDayOfWeek(date: Date): number {
+export function getISODayOfWeek(date: Date): number {
   return getISODay(date)
 }
 
-export function todayString(): string {
-  return toLocalDateString(new Date())
+// Parses "YYYY-MM-DD" to local Date at noon to avoid timezone drift
+export function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number)
+  return new Date(year, month - 1, day, 12, 0, 0)
 }
+
+export { format, parseISO, subDays, addDays, isAfter, isBefore, differenceInDays }
