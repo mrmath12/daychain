@@ -1,38 +1,52 @@
 {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "archive": "Archive",
+    "abandon": "Abandon",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noConnection": "No connection. Check-ins will be saved when you reconnect.",
+    "syncSuccess": "{count} check-in(s) synced.",
+    "syncError": "Could not sync."
+  },
   "nav": {
     "home": "Home",
     "progress": "Progress",
     "challenges": "Challenges",
     "settings": "Settings"
   },
-  "progress": {
-    "week": "Week",
-    "month": "Month",
-    "year": "Year",
-    "stats": "Stats"
-  },
-  "greeting": {
-    "morning": "Good morning",
-    "afternoon": "Good afternoon",
-    "evening": "Good evening"
+  "home": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "progress": "{done} / {total} habits done",
+    "activeChallenges": "Active challenges",
+    "noChallenges": ""
   },
   "habits": {
-    "done": "done",
-    "of": "of",
-    "add": "New habit",
-    "archive": "Archive",
-    "delete": "Delete",
-    "save": "Save",
-    "cancel": "Cancel",
-    "namePlaceholder": "Habit name",
-    "emojiPlaceholder": "Emoji",
+    "title": "Habits",
+    "new": "+ New habit",
+    "nameLabel": "Name",
+    "namePlaceholder": "E.g.: Reading",
+    "emojiLabel": "Emoji",
+    "frequencyLabel": "Days of the week",
     "nameRequired": "Name is required",
-    "nameMaxLength": "Maximum {max} characters",
-    "frequencyRequired": "Select at least one day",
-    "archived": "Archived"
-  },
-  "days": {
-    "short": {
+    "nameTooLong": "Maximum {max} characters",
+    "dayRequired": "Select at least one day",
+    "archiveConfirmTitle": "Archive {name}?",
+    "archiveConfirmBody": "History will be preserved and it will remain visible in past periods.",
+    "archiveWithChallenges": "\n{count} active challenge(s) will be marked as abandoned.",
+    "archivedToast": "{emoji} {name} was archived.",
+    "archivedWithChallenges": " {count} challenge(s) abandoned.",
+    "deleteConfirm1": "Are you sure?",
+    "deleteConfirm2": "This cannot be undone.",
+    "days": {
       "1": "Mon",
       "2": "Tue",
       "3": "Wed",
@@ -40,26 +54,77 @@
       "5": "Fri",
       "6": "Sat",
       "7": "Sun"
+    },
+    "daysLong": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
     }
   },
+  "progress": {
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "stats": "Stats",
+    "total": "Total",
+    "streakMax": "Max streak",
+    "noChecks": "No check-ins recorded yet"
+  },
+  "stats": {
+    "currentStreak": "Current streak",
+    "maxStreak": "Max streak",
+    "totalChecks": "Total check-ins",
+    "monthConsistency": "Month consistency",
+    "yearConsistency": "Year consistency",
+    "days": "days"
+  },
   "challenges": {
-    "add": "New Challenge",
-    "abandon": "Abandon",
+    "title": "Challenges",
+    "new": "+ New Challenge",
+    "tabs": {
+      "active": "Active",
+      "completed": "Completed",
+      "abandoned": "Abandoned",
+      "all": "All"
+    },
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum",
+      "diamond": "Diamond",
+      "master": "Master",
+      "challenger": "Challenger"
+    },
+    "nameLabel": "Name",
+    "tierLabel": "Tier",
+    "habitLabel": "Habit",
+    "startDateLabel": "Start date",
+    "endDateLabel": "Ends on",
+    "reasonLabel": "Reason (optional)",
+    "goalDays": "{n} days",
+    "progressLabel": "{done} / {total} days",
+    "daysRemaining": "{n} days remaining",
     "expired": "Expired",
-    "days": "days",
-    "active": "Active",
-    "completed": "Completed",
-    "abandoned": "Abandoned",
-    "all": "All"
+    "nameSuggestion": "{duration} days of {habit}",
+    "duplicateTierError": "You already have an active {tier} challenge for {habit}.",
+    "abandonConfirm": "Abandon '{name}'?",
+    "completedBadge": "Completed ✓",
+    "noHabitError": "Select a habit"
   },
-  "sync": {
-    "offline": "No connection. Your logs will be saved when you reconnect.",
-    "synced_one": "1 log synced.",
-    "synced_many": "{count} logs synced.",
-    "error": "Could not sync."
+  "settings": {
+    "title": "Settings",
+    "manageHabits": "Manage Habits",
+    "theme": "Theme",
+    "themeDark": "Dark",
+    "themeLight": "Light",
+    "language": "Language"
   },
-  "confirm": {
-    "yes": "Confirm",
-    "no": "Cancel"
+  "offline": {
+    "cannotCreateOffline": "No connection. Create habits when online."
   }
 }

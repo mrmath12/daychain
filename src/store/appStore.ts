@@ -1,32 +1,21 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { DEFAULT_LANGUAGE, DEFAULT_THEME } from '@/lib/utils/constants'
+import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '@/lib/utils/constants'
 
 interface AppState {
-  theme: string
-  language: string
-  hasPendingSync: boolean
-  setTheme: (theme: string) => void
-  setLanguage: (language: string) => void
-  setHasPendingSync: (pending: boolean) => void
+  language: 'pt-BR' | 'en'
+  setLanguage: (lang: 'pt-BR' | 'en') => void
+  // sync queue state — ver Prompt 14
 }
 
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
-      theme: DEFAULT_THEME,
-      language: DEFAULT_LANGUAGE,
-      hasPendingSync: false,
-      setTheme: (theme) => set({ theme }),
+      language: DEFAULT_LANGUAGE as 'pt-BR' | 'en',
       setLanguage: (language) => set({ language }),
-      setHasPendingSync: (hasPendingSync) => set({ hasPendingSync }),
     }),
     {
-      name: 'daychain:app',
-      partialize: (state) => ({
-        theme: state.theme,
-        language: state.language,
-      }),
+      name: LANGUAGE_STORAGE_KEY,
     }
   )
 )

@@ -1,38 +1,52 @@
 {
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Excluir",
+    "archive": "Arquivar",
+    "abandon": "Abandonar",
+    "edit": "Editar",
+    "loading": "Carregando...",
+    "error": "Algo deu errado",
+    "noConnection": "Sem conexão. As marcações serão salvas ao reconectar.",
+    "syncSuccess": "{count} marcação(ões) sincronizada(s).",
+    "syncError": "Não foi possível sincronizar."
+  },
   "nav": {
     "home": "Início",
     "progress": "Progresso",
     "challenges": "Desafios",
-    "settings": "Configurações"
+    "settings": "Config"
   },
-  "progress": {
-    "week": "Semana",
-    "month": "Mês",
-    "year": "Anual",
-    "stats": "Stats"
-  },
-  "greeting": {
-    "morning": "Bom dia",
-    "afternoon": "Boa tarde",
-    "evening": "Boa noite"
+  "home": {
+    "greeting": {
+      "morning": "Bom dia",
+      "afternoon": "Boa tarde",
+      "evening": "Boa noite"
+    },
+    "progress": "{done} / {total} hábitos feitos",
+    "activeChallenges": "Desafios ativos",
+    "noChallenges": ""
   },
   "habits": {
-    "done": "feitos",
-    "of": "de",
-    "add": "Novo hábito",
-    "archive": "Arquivar",
-    "delete": "Deletar",
-    "save": "Salvar",
-    "cancel": "Cancelar",
-    "namePlaceholder": "Nome do hábito",
-    "emojiPlaceholder": "Emoji",
+    "title": "Hábitos",
+    "new": "+ Novo hábito",
+    "nameLabel": "Nome",
+    "namePlaceholder": "Ex: Leitura",
+    "emojiLabel": "Emoji",
+    "frequencyLabel": "Dias da semana",
     "nameRequired": "Nome é obrigatório",
-    "nameMaxLength": "Máximo {max} caracteres",
-    "frequencyRequired": "Selecione ao menos um dia",
-    "archived": "Arquivado"
-  },
-  "days": {
-    "short": {
+    "nameTooLong": "Máximo {max} caracteres",
+    "dayRequired": "Selecione ao menos um dia",
+    "archiveConfirmTitle": "Arquivar {name}?",
+    "archiveConfirmBody": "O histórico será preservado e ele continuará visível nos períodos passados.",
+    "archiveWithChallenges": "\n{count} desafio(s) ativo(s) será(ão) marcado(s) como abandonado(s).",
+    "archivedToast": "{emoji} {name} foi arquivado.",
+    "archivedWithChallenges": " {count} desafio(s) abandonado(s).",
+    "deleteConfirm1": "Tem certeza?",
+    "deleteConfirm2": "Isso não pode ser desfeito.",
+    "days": {
       "1": "Seg",
       "2": "Ter",
       "3": "Qua",
@@ -40,26 +54,77 @@
       "5": "Sex",
       "6": "Sáb",
       "7": "Dom"
+    },
+    "daysLong": {
+      "1": "Segunda",
+      "2": "Terça",
+      "3": "Quarta",
+      "4": "Quinta",
+      "5": "Sexta",
+      "6": "Sábado",
+      "7": "Domingo"
     }
   },
+  "progress": {
+    "week": "Semana",
+    "month": "Mês",
+    "year": "Anual",
+    "stats": "Stats",
+    "total": "Total",
+    "streakMax": "Streak máx.",
+    "noChecks": "Nenhum check registrado ainda"
+  },
+  "stats": {
+    "currentStreak": "Streak atual",
+    "maxStreak": "Streak máximo",
+    "totalChecks": "Total de checks",
+    "monthConsistency": "Consistência no mês",
+    "yearConsistency": "Consistência no ano",
+    "days": "dias"
+  },
   "challenges": {
-    "add": "Novo Desafio",
-    "abandon": "Abandonar",
+    "title": "Desafios",
+    "new": "+ Novo Desafio",
+    "tabs": {
+      "active": "Ativos",
+      "completed": "Concluídos",
+      "abandoned": "Abandonados",
+      "all": "Todos"
+    },
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Prata",
+      "gold": "Ouro",
+      "platinum": "Platina",
+      "diamond": "Diamante",
+      "master": "Mestre",
+      "challenger": "Desafiante"
+    },
+    "nameLabel": "Nome",
+    "tierLabel": "Tier",
+    "habitLabel": "Hábito",
+    "startDateLabel": "Data de início",
+    "endDateLabel": "Termina em",
+    "reasonLabel": "Motivo (opcional)",
+    "goalDays": "{n} dias",
+    "progressLabel": "{done} / {total} dias",
+    "daysRemaining": "{n} dias restantes",
     "expired": "Expirado",
-    "days": "dias",
-    "active": "Ativos",
-    "completed": "Concluídos",
-    "abandoned": "Abandonados",
-    "all": "Todos"
+    "nameSuggestion": "{duration} dias de {habit}",
+    "duplicateTierError": "Você já tem um desafio {tier} ativo para {habit}.",
+    "abandonConfirm": "Abandonar '{name}'?",
+    "completedBadge": "Concluído ✓",
+    "noHabitError": "Selecione um hábito"
   },
-  "sync": {
-    "offline": "Sem conexão. As marcações serão salvas quando você reconectar.",
-    "synced_one": "1 marcação sincronizada.",
-    "synced_many": "{count} marcações sincronizadas.",
-    "error": "Não foi possível sincronizar."
+  "settings": {
+    "title": "Configurações",
+    "manageHabits": "Gerenciar Hábitos",
+    "theme": "Tema",
+    "themeDark": "Escuro",
+    "themeLight": "Claro",
+    "language": "Idioma"
   },
-  "confirm": {
-    "yes": "Confirmar",
-    "no": "Cancelar"
+  "offline": {
+    "cannotCreateOffline": "Sem conexão. Crie hábitos quando online."
   }
 }
