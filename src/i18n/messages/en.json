@@ -1,0 +1,65 @@
+{
+  "nav": {
+    "home": "Home",
+    "progress": "Progress",
+    "challenges": "Challenges",
+    "settings": "Settings"
+  },
+  "progress": {
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "stats": "Stats"
+  },
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening"
+  },
+  "habits": {
+    "done": "done",
+    "of": "of",
+    "add": "New habit",
+    "archive": "Archive",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "namePlaceholder": "Habit name",
+    "emojiPlaceholder": "Emoji",
+    "nameRequired": "Name is required",
+    "nameMaxLength": "Maximum {max} characters",
+    "frequencyRequired": "Select at least one day",
+    "archived": "Archived"
+  },
+  "days": {
+    "short": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
+    }
+  },
+  "challenges": {
+    "add": "New Challenge",
+    "abandon": "Abandon",
+    "expired": "Expired",
+    "days": "days",
+    "active": "Active",
+    "completed": "Completed",
+    "abandoned": "Abandoned",
+    "all": "All"
+  },
+  "sync": {
+    "offline": "No connection. Your logs will be saved when you reconnect.",
+    "synced_one": "1 log synced.",
+    "synced_many": "{count} logs synced.",
+    "error": "Could not sync."
+  },
+  "confirm": {
+    "yes": "Confirm",
+    "no": "Cancel"
+  }
+}

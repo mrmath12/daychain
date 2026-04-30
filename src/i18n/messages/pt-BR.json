@@ -1,0 +1,65 @@
+{
+  "nav": {
+    "home": "Início",
+    "progress": "Progresso",
+    "challenges": "Desafios",
+    "settings": "Configurações"
+  },
+  "progress": {
+    "week": "Semana",
+    "month": "Mês",
+    "year": "Anual",
+    "stats": "Stats"
+  },
+  "greeting": {
+    "morning": "Bom dia",
+    "afternoon": "Boa tarde",
+    "evening": "Boa noite"
+  },
+  "habits": {
+    "done": "feitos",
+    "of": "de",
+    "add": "Novo hábito",
+    "archive": "Arquivar",
+    "delete": "Deletar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "namePlaceholder": "Nome do hábito",
+    "emojiPlaceholder": "Emoji",
+    "nameRequired": "Nome é obrigatório",
+    "nameMaxLength": "Máximo {max} caracteres",
+    "frequencyRequired": "Selecione ao menos um dia",
+    "archived": "Arquivado"
+  },
+  "days": {
+    "short": {
+      "1": "Seg",
+      "2": "Ter",
+      "3": "Qua",
+      "4": "Qui",
+      "5": "Sex",
+      "6": "Sáb",
+      "7": "Dom"
+    }
+  },
+  "challenges": {
+    "add": "Novo Desafio",
+    "abandon": "Abandonar",
+    "expired": "Expirado",
+    "days": "dias",
+    "active": "Ativos",
+    "completed": "Concluídos",
+    "abandoned": "Abandonados",
+    "all": "Todos"
+  },
+  "sync": {
+    "offline": "Sem conexão. As marcações serão salvas quando você reconectar.",
+    "synced_one": "1 marcação sincronizada.",
+    "synced_many": "{count} marcações sincronizadas.",
+    "error": "Não foi possível sincronizar."
+  },
+  "confirm": {
+    "yes": "Confirmar",
+    "no": "Cancelar"
+  }
+}
