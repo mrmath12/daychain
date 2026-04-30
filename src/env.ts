@@ -5,13 +5,15 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z
     .string()
     .min(1, 'NEXT_PUBLIC_SUPABASE_ANON_KEY must not be empty'),
-  HARDCODED_USER_ID: z.string().uuid('HARDCODED_USER_ID must be a valid UUID'),
+  NEXT_PUBLIC_HARDCODED_USER_ID: z
+    .string()
+    .uuid('NEXT_PUBLIC_HARDCODED_USER_ID must be a valid UUID'),
 })
 
 const parsed = envSchema.safeParse({
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  HARDCODED_USER_ID: process.env.HARDCODED_USER_ID,
+  NEXT_PUBLIC_HARDCODED_USER_ID: process.env.NEXT_PUBLIC_HARDCODED_USER_ID,
 })
 
 if (!parsed.success) {
