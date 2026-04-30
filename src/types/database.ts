@@ -3,7 +3,7 @@
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       users: {
@@ -25,6 +25,7 @@ export interface Database {
           name?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       habits: {
         Row: {
@@ -57,6 +58,7 @@ export interface Database {
           archived_at?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       habit_logs: {
         Row: {
@@ -80,6 +82,7 @@ export interface Database {
           logged_date?: string
           created_at?: string
         }
+        Relationships: []
       }
       challenges: {
         Row: {
@@ -121,7 +124,12 @@ export interface Database {
           status?: string
           created_at?: string
         }
+        Relationships: []
       }
     }
+    Views: { [_ in never]: never }
+    Functions: { [_ in never]: never }
+    Enums: { [_ in never]: never }
+    CompositeTypes: { [_ in never]: never }
   }
 }

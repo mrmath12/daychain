@@ -17,6 +17,18 @@ export async function getChallenges(
   return (data ?? []).map(mapChallenge)
 }
 
+export async function abandonActiveChallengesByHabit(habitId: string): Promise<number> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('challenges')
+    .update({ status: 'abandoned' })
+    .eq('habit_id', habitId)
+    .eq('status', 'active')
+    .select('id')
+  if (error) throw new Error(error.message)
+  return data?.length ?? 0
+}
+
 function mapChallenge(row: Record<string, unknown>): Challenge {
   return {
     id: row.id as string,

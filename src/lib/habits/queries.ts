@@ -1,47 +1,10 @@
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
-import type { Habit, HabitLog } from '@/types/domain'
+import type { Habit, DayOfWeek, HabitLog } from '@/types/domain'
+import type { Database } from '@/types/database'
 
-export async function getActiveHabits(userId: string): Promise<Habit[]> {
-  const supabase = getSupabaseBrowserClient()
-  const { data, error } = await supabase
-    .from('habits')
-    .select('*')
-    .eq('user_id', userId)
-    .is('archived_at', null)
-    .order('sort_order', { ascending: true })
+type HabitUpdate = Database['public']['Tables']['habits']['Update']
 
-  if (error) throw error
-  return (data ?? []).map(mapHabit)
-}
-
-export async function getAllHabits(userId: string): Promise<Habit[]> {
-  const supabase = getSupabaseBrowserClient()
-  const { data, error } = await supabase
-    .from('habits')
-    .select('*')
-    .eq('user_id', userId)
-    .order('sort_order', { ascending: true })
-
-  if (error) throw error
-  return (data ?? []).map(mapHabit)
-}
-
-export async function getHabitLogs(
-  userId: string,
-  startDate: string,
-  endDate: string
-): Promise<HabitLog[]> {
-  const supabase = getSupabaseBrowserClient()
-  const { data, error } = await supabase
-    .from('habit_logs')
-    .select('*')
-    .eq('user_id', userId)
-    .gte('logged_date', startDate)
-    .lte('logged_date', endDate)
-
-  if (error) throw error
-  return (data ?? []).map(mapHabitLog)
-}
+// ----- mappers -----
 
 function mapHabit(row: Record<string, unknown>): Habit {
   return {
@@ -49,7 +12,7 @@ function mapHabit(row: Record<string, unknown>): Habit {
     userId: row.user_id as string,
     name: row.name as string,
     emoji: row.emoji as string,
-    frequency: row.frequency as import('@/types/domain').DayOfWeek[],
+    frequency: row.frequency as DayOfWeek[],
     sortOrder: row.sort_order as number,
     archivedAt: row.archived_at as string | null,
     createdAt: row.created_at as string,
@@ -64,4 +27,159 @@ function mapHabitLog(row: Record<string, unknown>): HabitLog {
     loggedDate: row.logged_date as string,
     createdAt: row.created_at as string,
   }
+}
+
+// ----- read -----
+
+export async function fetchActiveHabits(userId: string): Promise<Habit[]> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habits')
+    .select('*')
+    .eq('user_id', userId)
+    .is('archived_at', null)
+    .order('sort_order', { ascending: true })
+  if (error) throw new Error(error.message)
+  return (data ?? []).map(mapHabit)
+}
+
+// backward-compat alias
+export const getActiveHabits = fetchActiveHabits
+
+export async function fetchAllHabits(userId: string): Promise<Habit[]> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habits')
+    .select('*')
+    .eq('user_id', userId)
+    .order('sort_order', { ascending: true })
+  if (error) throw new Error(error.message)
+  return (data ?? []).map(mapHabit)
+}
+
+// backward-compat alias
+export const getAllHabits = fetchAllHabits
+
+export async function getHabitLogs(
+  userId: string,
+  startDate: string,
+  endDate: string
+): Promise<HabitLog[]> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('*')
+    .eq('user_id', userId)
+    .gte('logged_date', startDate)
+    .lte('logged_date', endDate)
+  if (error) throw new Error(error.message)
+  return (data ?? []).map(mapHabitLog)
+}
+
+export async function countHabitLogs(habitId: string): Promise<number> {
+  const supabase = getSupabaseBrowserClient()
+  const { count, error } = await supabase
+    .from('habit_logs')
+    .select('id', { count: 'exact', head: true })
+    .eq('habit_id', habitId)
+  if (error) throw new Error(error.message)
+  return count ?? 0
+}
+
+// ----- write -----
+
+export async function createHabit(
+  userId: string,
+  input: Pick<Habit, 'name' | 'emoji' | 'frequency'>
+): Promise<Habit> {
+  const supabase = getSupabaseBrowserClient()
+
+  const { data: maxRow } = await supabase
+    .from('habits')
+    .select('sort_order')
+    .eq('user_id', userId)
+    .order('sort_order', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  const nextSortOrder = ((maxRow?.sort_order as number | null) ?? 0) + 1
+
+  const { data, error } = await supabase
+    .from('habits')
+    .insert({
+      user_id: userId,
+      name: input.name.trim(),
+      emoji: input.emoji,
+      frequency: input.frequency,
+      sort_order: nextSortOrder,
+    })
+    .select('*')
+    .single()
+
+  if (error) throw new Error(error.message)
+  return mapHabit(data as Record<string, unknown>)
+}
+
+export async function updateHabit(
+  habitId: string,
+  userId: string,
+  updates: Partial<Pick<Habit, 'name' | 'emoji' | 'frequency'>>
+): Promise<Habit> {
+  const supabase = getSupabaseBrowserClient()
+
+  const dbUpdates: HabitUpdate = {}
+  if (updates.name !== undefined) dbUpdates.name = updates.name.trim()
+  if (updates.emoji !== undefined) dbUpdates.emoji = updates.emoji
+  if (updates.frequency !== undefined) dbUpdates.frequency = updates.frequency
+
+  const { data, error } = await supabase
+    .from('habits')
+    .update(dbUpdates)
+    .eq('id', habitId)
+    .eq('user_id', userId)
+    .select('*')
+    .single()
+
+  if (error) throw new Error(error.message)
+  return mapHabit(data as Record<string, unknown>)
+}
+
+export async function archiveHabit(habitId: string, userId: string): Promise<void> {
+  const supabase = getSupabaseBrowserClient()
+  const { error } = await supabase
+    .from('habits')
+    .update({ archived_at: new Date().toISOString() })
+    .eq('id', habitId)
+    .eq('user_id', userId)
+  if (error) throw new Error(error.message)
+}
+
+export async function deleteHabit(habitId: string, userId: string): Promise<void> {
+  const supabase = getSupabaseBrowserClient()
+  const { error } = await supabase
+    .from('habits')
+    .delete()
+    .eq('id', habitId)
+    .eq('user_id', userId)
+    .not('archived_at', 'is', null)
+  if (error) throw new Error(error.message)
+}
+
+export async function reorderHabits(
+  updates: Array<{ id: string; sortOrder: number }>,
+  userId: string
+): Promise<void> {
+  const supabase = getSupabaseBrowserClient()
+  await Promise.all(
+    updates.map(({ id, sortOrder }) =>
+      supabase
+        .from('habits')
+        .update({ sort_order: sortOrder })
+        .eq('id', id)
+        .eq('user_id', userId)
+        .then(({ error }) => {
+          if (error) throw new Error(error.message)
+        })
+    )
+  )
 }
