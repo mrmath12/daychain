@@ -5,6 +5,8 @@ import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '@/lib/utils/constants'
 interface AppState {
   language: 'pt-BR' | 'en'
   setLanguage: (lang: 'pt-BR' | 'en') => void
+  lastProgressTab: string
+  setLastProgressTab: (tab: string) => void
   // sync queue state — ver Prompt 14
 }
 
@@ -13,6 +15,8 @@ export const useAppStore = create<AppState>()(
     (set) => ({
       language: DEFAULT_LANGUAGE as 'pt-BR' | 'en',
       setLanguage: (language) => set({ language }),
+      lastProgressTab: '/progress/week',
+      setLastProgressTab: (lastProgressTab) => set({ lastProgressTab }),
     }),
     {
       name: LANGUAGE_STORAGE_KEY,
