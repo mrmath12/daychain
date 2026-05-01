@@ -17,6 +17,15 @@ export async function getChallenges(
   return (data ?? []).map(mapChallenge)
 }
 
+export async function abandonChallenge(challengeId: string): Promise<void> {
+  const supabase = getSupabaseBrowserClient()
+  const { error } = await supabase
+    .from('challenges')
+    .update({ status: 'abandoned' })
+    .eq('id', challengeId)
+  if (error) throw new Error(error.message)
+}
+
 export async function abandonActiveChallengesByHabit(habitId: string): Promise<number> {
   const supabase = getSupabaseBrowserClient()
   const { data, error } = await supabase

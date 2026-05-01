@@ -213,3 +213,49 @@ export async function reorderHabits(
     )
   )
 }
+
+// Marks or unmarks a habit for a given local date.
+// Uses UPSERT to mark and DELETE to unmark. logged_date must always be the device's LOCAL date.
+export async function toggleHabitCheck(
+  habitId: string,
+  userId: string,
+  loggedDate: string, // "YYYY-MM-DD" — local date
+  value: boolean // true = mark done, false = unmark
+): Promise<void> {
+  const supabase = getSupabaseBrowserClient()
+  if (value) {
+    const { error } = await supabase
+      .from('habit_logs')
+      .upsert(
+        { habit_id: habitId, user_id: userId, logged_date: loggedDate },
+        { onConflict: 'habit_id,logged_date' }
+      )
+    if (error) throw new Error(error.message)
+  } else {
+    const { error } = await supabase
+      .from('habit_logs')
+      .delete()
+      .eq('habit_id', habitId)
+      .eq('user_id', userId)
+      .eq('logged_date', loggedDate)
+    if (error) throw new Error(error.message)
+  }
+}
+
+// Fetches today's checks for a list of habit_ids. Returns a Set of habit_ids done today.
+export async function fetchTodayChecks(
+  habitIds: string[],
+  userId: string,
+  todayDate: string
+): Promise<Set<string>> {
+  if (habitIds.length === 0) return new Set()
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('habit_id')
+    .eq('user_id', userId)
+    .eq('logged_date', todayDate)
+    .in('habit_id', habitIds)
+  if (error) throw new Error(error.message)
+  return new Set((data ?? []).map((row) => row.habit_id as string))
+}
