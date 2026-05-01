@@ -1,12 +1,32 @@
 'use client'
 
-import { useMemo } from 'react'
-import type { Habit, HabitLog } from '@/types/domain'
-import { calcularStreakAtual } from '@/lib/habits/streak'
+import { useState, useEffect, useMemo } from 'react'
+import type { Habit } from '@/types/domain'
+import { calculateCurrentStreak, calculateMaxStreak } from '@/lib/habits/streak'
+import { fetchHabitLogDates } from '@/lib/habits/queries'
+import { env } from '@/env'
 
-export function useStreak(habit: Habit, logs: HabitLog[]): number {
+interface StreakData {
+  currentStreak: number
+  maxStreak: number
+}
+
+export function useStreak(habit: Habit): StreakData {
+  const [loggedDates, setLoggedDates] = useState<Set<string>>(new Set())
+  const userId = env.NEXT_PUBLIC_HARDCODED_USER_ID
+
+  useEffect(() => {
+    fetchHabitLogDates(habit.id, userId)
+      .then(setLoggedDates)
+      .catch(() => setLoggedDates(new Set()))
+  }, [habit.id, userId])
+
   return useMemo(() => {
-    const logSet = new Set(logs.filter((l) => l.habitId === habit.id).map((l) => l.loggedDate))
-    return calcularStreakAtual(habit.frequency, logSet, new Date())
-  }, [habit, logs])
+    const today = new Date()
+    const createdAt = new Date(habit.createdAt)
+    return {
+      currentStreak: calculateCurrentStreak(habit.frequency, loggedDates, today),
+      maxStreak: calculateMaxStreak(habit.frequency, loggedDates, createdAt, today),
+    }
+  }, [habit, loggedDates])
 }

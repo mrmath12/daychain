@@ -86,6 +86,36 @@ export async function countHabitLogs(habitId: string): Promise<number> {
   return count ?? 0
 }
 
+export async function fetchHabitLogDates(habitId: string, userId: string): Promise<Set<string>> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('logged_date')
+    .eq('habit_id', habitId)
+    .eq('user_id', userId)
+  if (error) throw new Error(error.message)
+  return new Set((data ?? []).map((row) => row.logged_date as string))
+}
+
+export async function fetchHabitLogsByPeriod(
+  habitId: string,
+  userId: string,
+  startDate: string,
+  endDate: string
+): Promise<HabitLog[]> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('*')
+    .eq('habit_id', habitId)
+    .eq('user_id', userId)
+    .gte('logged_date', startDate)
+    .lte('logged_date', endDate)
+    .order('logged_date', { ascending: true })
+  if (error) throw new Error(error.message)
+  return (data ?? []).map(mapHabitLog)
+}
+
 // ----- write -----
 
 export async function createHabit(
