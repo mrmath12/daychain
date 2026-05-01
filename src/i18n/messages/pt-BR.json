@@ -74,7 +74,9 @@
     "streakMax": "Streak máx.",
     "noChecks": "Nenhum check registrado ainda",
     "prevWeek": "Semana anterior",
-    "nextWeek": "Próxima semana"
+    "nextWeek": "Próxima semana",
+    "prevMonth": "Mês anterior",
+    "nextMonth": "Próximo mês"
   },
   "stats": {
     "currentStreak": "Streak atual",
@@ -121,10 +123,13 @@
   "settings": {
     "title": "Configurações",
     "manageHabits": "Gerenciar Hábitos",
+    "manageHabitsDesc": "Crie, edite, reordene e arquive hábitos.",
     "theme": "Tema",
+    "themeDesc": "Alterne entre tema escuro e claro.",
     "themeDark": "Escuro",
     "themeLight": "Claro",
-    "language": "Idioma"
+    "language": "Idioma",
+    "languageDesc": "Altere o idioma da interface."
   },
   "offline": {
     "cannotCreateOffline": "Sem conexão. Crie hábitos quando online."

@@ -22,7 +22,7 @@ export default function SettingsPage() {
         <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
           {t('settings.manageHabits')}
         </h2>
-        <p className="text-sm text-muted-foreground">Crie, edite, reordene e arquive hábitos.</p>
+        <p className="text-sm text-muted-foreground">{t('settings.manageHabitsDesc')}</p>
         <button
           onClick={() => setManageOpen(true)}
           className="rounded-md border border-input px-4 py-2 text-sm hover:bg-accent transition-colors"
@@ -36,8 +36,8 @@ export default function SettingsPage() {
         <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
           {t('settings.theme')}
         </h2>
-        <p className="text-sm text-muted-foreground">Alterne entre tema escuro e claro.</p>
-        <ThemeLanguageToggle />
+        <p className="text-sm text-muted-foreground">{t('settings.themeDesc')}</p>
+        <ThemeLanguageToggle mode="theme" />
       </section>
 
       {/* Language */}
@@ -45,8 +45,8 @@ export default function SettingsPage() {
         <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
           {t('settings.language')}
         </h2>
-        <p className="text-sm text-muted-foreground">Altere o idioma da interface.</p>
-        <ThemeLanguageToggle />
+        <p className="text-sm text-muted-foreground">{t('settings.languageDesc')}</p>
+        <ThemeLanguageToggle mode="language" />
       </section>
 
       {/* Manage habits sheet */}

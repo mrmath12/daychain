@@ -1,5 +1,5 @@
-import { getISODay } from 'date-fns'
-import { parseLocalDate } from '@/lib/utils/date'
+import { getISODay, format } from 'date-fns'
+import { parseLocalDate, getTodayLocalDate } from '@/lib/utils/date'
 import type { DayOfWeek, Habit } from '@/types/domain'
 
 export type CellState =
@@ -37,6 +37,31 @@ export function determineCellState(
   }
 
   return isDone ? 'done' : 'pending'
+}
+
+// Calculates check count and expected day count for a habit over a set of period days.
+// Expected days = days where habit is due (frequency match, after creation, not future).
+export function calculatePeriodStats(
+  habit: Habit,
+  loggedDates: Set<string>,
+  periodDays: Date[]
+): { checksCount: number; expectedCount: number } {
+  const today = getTodayLocalDate()
+  let checksCount = 0
+  let expectedCount = 0
+
+  for (const day of periodDays) {
+    const dateStr = format(day, 'yyyy-MM-dd')
+    const state = determineCellState(habit, dateStr, loggedDates, today)
+    if (state === 'done' || state === 'archived-done') {
+      checksCount++
+      expectedCount++
+    } else if (state === 'pending' || state === 'archived-pending') {
+      expectedCount++
+    }
+  }
+
+  return { checksCount, expectedCount }
 }
 
 export function getArchivedHabitsWithLogsInPeriod(

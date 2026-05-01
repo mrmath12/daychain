@@ -10,6 +10,9 @@ import {
   startOfISOWeek,
   getISOWeek,
   getISOWeekYear,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
 } from 'date-fns'
 import type { DayOfWeek, Habit } from '@/types/domain'
 
@@ -81,6 +84,39 @@ export function isToday(date: Date): boolean {
 
 export function isFutureDate(date: Date): boolean {
   return format(date, 'yyyy-MM-dd') > getTodayLocalDate()
+}
+
+export {
+  startOfMonth as getMonthStart,
+  endOfMonth as getMonthEnd,
+  getDaysInMonth,
+  isLeapYear,
+} from 'date-fns'
+
+// Returns all days of the given month as Date[] at noon (avoids timezone drift)
+export function getMonthDays(year: number, month: number): Date[] {
+  const ref = new Date(year, month - 1, 1, 12, 0, 0)
+  return eachDayOfInterval({ start: startOfMonth(ref), end: endOfMonth(ref) }).map(
+    (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0)
+  )
+}
+
+export function getMonthIdentifier(date: Date): string {
+  return format(date, 'yyyy-MM')
+}
+
+export function parseMonthIdentifier(monthId: string): { year: number; month: number } {
+  const [yearStr, monthStr] = monthId.split('-')
+  return { year: parseInt(yearStr, 10), month: parseInt(monthStr, 10) }
+}
+
+export function navigateMonth(
+  year: number,
+  month: number,
+  delta: number
+): { year: number; month: number } {
+  const d = new Date(year, month - 1 + delta, 1, 12, 0, 0)
+  return { year: d.getFullYear(), month: d.getMonth() + 1 }
 }
 
 export { format, parseISO, subDays, addDays, isAfter, isBefore, differenceInDays }
