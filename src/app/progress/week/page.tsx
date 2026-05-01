@@ -129,31 +129,36 @@ function WeekPageContent() {
 
   return (
     <div>
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <button
           type="button"
           aria-label={t('progress.prevWeek')}
           onClick={() => navigateWeek(-1)}
-          className="flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-muted"
+          className="flex h-9 w-9 items-center justify-center border border-border transition-all hover:bg-muted hover:border-foreground/30 active:scale-95"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
 
-        <span className="text-sm font-medium">{dateRange}</span>
+        <div className="flex flex-col items-center gap-0.5">
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+            {weekId}
+          </span>
+          <span className="text-sm font-medium tabular-nums">{dateRange}</span>
+        </div>
 
         <button
           type="button"
           aria-label={t('progress.nextWeek')}
           onClick={() => navigateWeek(1)}
           disabled={isCurrentWeek}
-          className="flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex h-9 w-9 items-center justify-center border border-border transition-all hover:bg-muted hover:border-foreground/30 active:scale-95 disabled:cursor-not-allowed disabled:opacity-30"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
 
       {isLoading ? (
-        <div className="flex h-32 items-center justify-center text-sm text-muted-foreground">
+        <div className="flex h-32 items-center justify-center text-xs font-mono uppercase tracking-widest text-muted-foreground">
           {t('common.loading')}
         </div>
       ) : (

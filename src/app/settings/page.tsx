@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useHabits } from '@/hooks/useHabits'
 import { HabitList } from '@/components/habits/HabitList'
-import { ThemeLanguageToggle } from '@/components/shared/ThemeLanguageToggle'
+import { ThemeToggle } from '@/components/shared/ThemeToggle'
 import { Sheet } from '@/components/ui/sheet'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 
@@ -37,16 +37,7 @@ export default function SettingsPage() {
           {t('settings.theme')}
         </h2>
         <p className="text-sm text-muted-foreground">{t('settings.themeDesc')}</p>
-        <ThemeLanguageToggle mode="theme" />
-      </section>
-
-      {/* Language */}
-      <section className="space-y-2">
-        <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-          {t('settings.language')}
-        </h2>
-        <p className="text-sm text-muted-foreground">{t('settings.languageDesc')}</p>
-        <ThemeLanguageToggle mode="language" />
+        <ThemeToggle />
       </section>
 
       {/* Manage habits sheet */}

@@ -24,9 +24,9 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Bottom navigation"
-      className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background lg:hidden"
+      className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 lg:hidden"
     >
-      <div className="flex h-16 items-center">
+      <div className="flex items-center gap-1 rounded-2xl border border-border/40 bg-background/80 px-2 py-2 shadow-[0_8px_40px_rgba(0,0,0,0.14)] backdrop-blur-2xl">
         {NAV_ITEMS.map(({ href, icon: Icon, labelKey }) => {
           const active = isActive(href)
           const label = t(labelKey)
@@ -36,12 +36,24 @@ export function BottomNav() {
               href={href}
               aria-label={label}
               aria-current={active ? 'page' : undefined}
-              className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 min-h-[44px] min-w-[44px] transition-colors ${
-                active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+              className={`flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 min-h-[44px] min-w-[44px] transition-all duration-300 ease-out ${
+                active
+                  ? 'bg-foreground text-background'
+                  : 'text-muted-foreground hover:bg-muted/70 hover:text-foreground'
               }`}
             >
-              <Icon size={20} aria-hidden="true" />
-              <span className="text-[10px] font-medium leading-none">{label}</span>
+              <Icon
+                size={18}
+                aria-hidden="true"
+                className={`shrink-0 transition-transform duration-300 ${active ? 'scale-110' : 'scale-100'}`}
+              />
+              <span
+                className={`overflow-hidden whitespace-nowrap text-xs font-semibold tracking-tight transition-all duration-300 ease-out ${
+                  active ? 'max-w-24 opacity-100' : 'max-w-0 opacity-0'
+                }`}
+              >
+                {label}
+              </span>
             </Link>
           )
         })}

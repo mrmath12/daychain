@@ -10,16 +10,25 @@ interface Props {
 }
 
 export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
-  const base = 'flex items-center justify-center min-h-[44px] min-w-[44px] select-none'
+  const base = 'flex items-center justify-center w-full min-h-[54px] select-none'
 
   if (state === 'not-expected') {
-    return <div className={`${base} bg-muted`} aria-hidden="true" />
+    return (
+      <div
+        className={`${base}`}
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(-45deg, transparent, transparent 3px, hsl(var(--muted)) 3px, hsl(var(--muted)) 4px)',
+        }}
+      />
+    )
   }
 
   if (state === 'future') {
     return (
-      <div className={`${base} cursor-default opacity-40`} aria-hidden="true">
-        <div className="h-5 w-5 rounded border border-muted-foreground/40" />
+      <div className={`${base} cursor-default opacity-20`} aria-hidden="true">
+        <div className="h-5 w-5 border border-current" />
       </div>
     )
   }
@@ -31,9 +40,11 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
         aria-label="Desmarcar"
         onClick={onToggle}
         disabled={isLoading}
-        className={`${base} rounded bg-primary/10 transition-opacity ${isLoading ? 'opacity-50' : 'hover:bg-primary/20'}`}
+        className={`${base} bg-amber-400 dark:bg-amber-500 transition-all ${
+          isLoading ? 'opacity-50' : 'hover:bg-amber-300 dark:hover:bg-amber-400 active:scale-95'
+        }`}
       >
-        <Check className="h-4 w-4 text-primary" strokeWidth={2.5} />
+        <Check className="h-[18px] w-[18px] text-white" strokeWidth={3} />
       </button>
     )
   }
@@ -45,25 +56,29 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
         aria-label="Marcar"
         onClick={onToggle}
         disabled={isLoading}
-        className={`${base} rounded transition-opacity ${isLoading ? 'opacity-50' : 'hover:bg-muted'}`}
+        className={`${base} transition-all ${
+          isLoading ? 'opacity-50' : 'hover:bg-amber-50 dark:hover:bg-amber-950/20 active:scale-95'
+        }`}
       >
-        <div className="h-5 w-5 rounded border-2 border-muted-foreground/60" />
+        <div className="h-5 w-5 border-2 border-zinc-300 dark:border-zinc-600 transition-colors group-hover:border-amber-400" />
       </button>
     )
   }
 
   if (state === 'archived-done') {
     return (
-      <div className={`${base} cursor-default`} aria-hidden="true">
-        <Check className="h-4 w-4 text-muted-foreground/50" strokeWidth={2.5} />
+      <div className={`${base} cursor-default opacity-25`} aria-hidden="true">
+        <div className="h-5 w-5 bg-amber-400 dark:bg-amber-500 flex items-center justify-center">
+          <Check className="h-3 w-3 text-white" strokeWidth={3} />
+        </div>
       </div>
     )
   }
 
   // archived-pending
   return (
-    <div className={`${base} cursor-default`} aria-hidden="true">
-      <span className="text-sm text-muted-foreground/50">–</span>
+    <div className={`${base} cursor-default opacity-25`} aria-hidden="true">
+      <div className="h-5 w-5 border border-zinc-400 dark:border-zinc-600" />
     </div>
   )
 }
