@@ -116,6 +116,32 @@ export async function fetchHabitLogsByPeriod(
   return (data ?? []).map(mapHabitLog)
 }
 
+export async function fetchHabitLogsByHabitsAndPeriod(
+  habitIds: string[],
+  userId: string,
+  startDate: string,
+  endDate: string
+): Promise<Map<string, Set<string>>> {
+  if (habitIds.length === 0) return new Map()
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('habit_id, logged_date')
+    .eq('user_id', userId)
+    .in('habit_id', habitIds)
+    .gte('logged_date', startDate)
+    .lte('logged_date', endDate)
+  if (error) throw new Error(error.message)
+  const map = new Map<string, Set<string>>()
+  for (const row of data ?? []) {
+    const id = row.habit_id as string
+    const date = row.logged_date as string
+    if (!map.has(id)) map.set(id, new Set())
+    map.get(id)!.add(date)
+  }
+  return map
+}
+
 // ----- write -----
 
 export async function createHabit(

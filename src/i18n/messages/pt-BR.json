@@ -72,7 +72,9 @@
     "stats": "Stats",
     "total": "Total",
     "streakMax": "Streak máx.",
-    "noChecks": "Nenhum check registrado ainda"
+    "noChecks": "Nenhum check registrado ainda",
+    "prevWeek": "Semana anterior",
+    "nextWeek": "Próxima semana"
   },
   "stats": {
     "currentStreak": "Streak atual",
