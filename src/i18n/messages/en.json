@@ -72,7 +72,9 @@
     "stats": "Stats",
     "total": "Total",
     "streakMax": "Max streak",
-    "noChecks": "No check-ins recorded yet"
+    "noChecks": "No check-ins recorded yet",
+    "prevWeek": "Previous week",
+    "nextWeek": "Next week"
   },
   "stats": {
     "currentStreak": "Current streak",
