@@ -15,10 +15,6 @@ interface Props {
   isLoadingCell?: Set<string>
 }
 
-function truncateName(name: string, max = 12): string {
-  return name.length > max ? name.slice(0, max) + '…' : name
-}
-
 export function WeeklyGrid({
   habits,
   logsByHabit,
@@ -48,7 +44,7 @@ export function WeeklyGrid({
 
   if (habits.length === 0) {
     return (
-      <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
+      <div className="flex items-center justify-center h-32 text-xs font-mono uppercase tracking-widest text-muted-foreground">
         {t('progress.noChecks')}
       </div>
     )
@@ -56,13 +52,28 @@ export function WeeklyGrid({
 
   return (
     <div
-      className="overflow-x-auto"
+      className="overflow-x-auto w-full"
       style={{ overscrollBehaviorX: 'contain' } as React.CSSProperties}
     >
-      <table className="border-collapse text-sm" style={{ minWidth: 'max-content' }}>
+      <table
+        className="border-collapse text-sm w-full"
+        style={{ tableLayout: 'fixed', minWidth: '420px' }}
+      >
+        <colgroup>
+          <col style={{ width: '148px' }} />
+          {weekDays.map((day) => (
+            <col key={format(day, 'yyyy-MM-dd')} />
+          ))}
+        </colgroup>
         <thead>
           <tr>
-            <th className="sticky left-0 z-10 bg-background border-b border-r border-border px-3 py-2 text-left min-w-[148px]" />
+            <th
+              className="sticky left-0 z-10 bg-background px-3 py-2 text-left"
+              style={{
+                borderBottom: '2px solid hsl(var(--border))',
+                borderRight: '1px solid hsl(var(--border))',
+              }}
+            />
             {weekDays.map((day) => {
               const dayStr = format(day, 'yyyy-MM-dd')
               const isCurrentDay = dayStr === today
@@ -70,15 +81,22 @@ export function WeeklyGrid({
               return (
                 <th
                   key={dayStr}
-                  className={`border-b border-border px-1 py-2 text-center min-w-[44px] font-normal ${
-                    isCurrentDay ? 'bg-primary/10' : ''
+                  className={`px-1 py-2 text-center font-normal ${
+                    isCurrentDay ? 'bg-amber-50 dark:bg-amber-950/30' : ''
                   }`}
+                  style={{ borderBottom: '2px solid hsl(var(--border))' }}
                 >
                   <div className="flex flex-col items-center gap-0.5">
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
                       {t(`habits.days.${dowKey}`)}
                     </span>
-                    <span className="text-sm font-semibold">{format(day, 'd')}</span>
+                    <span
+                      className={`text-sm font-bold font-mono ${
+                        isCurrentDay ? 'text-amber-600 dark:text-amber-400' : ''
+                      }`}
+                    >
+                      {format(day, 'd')}
+                    </span>
                   </div>
                 </th>
               )
@@ -90,16 +108,17 @@ export function WeeklyGrid({
             const isArchived = habit.archivedAt !== null
             const logs = logsByHabit.get(habit.id) ?? new Set<string>()
             return (
-              <tr key={habit.id}>
-                <td className="sticky left-0 z-10 bg-background border-b border-r border-border px-3 py-0">
-                  <div className="flex items-center gap-1.5 min-h-[44px] max-w-[140px]">
+              <tr key={habit.id} className="group">
+                <td className="sticky left-0 z-10 bg-background border-b border-r border-border px-3 py-0 group-hover:bg-muted/40 transition-colors">
+                  <div className="flex items-center gap-2 min-h-[54px] max-w-[140px]">
                     <span className="shrink-0 text-base leading-none">{habit.emoji}</span>
                     <span
-                      className={`truncate text-sm leading-tight ${isArchived ? 'text-muted-foreground' : ''}`}
+                      className={`truncate text-sm leading-tight font-medium ${
+                        isArchived ? 'text-muted-foreground/50 line-through' : ''
+                      }`}
                       title={habit.name}
                     >
-                      {isArchived ? '🗄️ ' : ''}
-                      {truncateName(habit.name)}
+                      {habit.name}
                     </span>
                   </div>
                 </td>
@@ -111,7 +130,9 @@ export function WeeklyGrid({
                   return (
                     <td
                       key={dayStr}
-                      className={`border-b border-border p-0 ${isCurrentDay ? 'bg-primary/10' : ''}`}
+                      className={`border-b border-border p-0 ${
+                        isCurrentDay ? 'bg-amber-50 dark:bg-amber-950/30' : ''
+                      }`}
                     >
                       <WeekGridCell
                         state={state}
@@ -127,21 +148,42 @@ export function WeeklyGrid({
         </tbody>
         <tfoot>
           <tr>
-            <td className="sticky left-0 z-10 bg-background border-t border-r border-border px-3 py-2 text-xs font-medium text-muted-foreground">
+            <td
+              className="sticky left-0 z-10 bg-background border-r border-border px-3 py-2 text-[10px] font-mono font-semibold uppercase tracking-widest text-muted-foreground"
+              style={{ borderTop: '2px solid hsl(var(--border))' }}
+            >
               {t('progress.total')}
             </td>
             {weekDays.map((day) => {
               const dayStr = format(day, 'yyyy-MM-dd')
               const { done, expected } = getDayTotals(dayStr)
               const isCurrentDay = dayStr === today
+              const allDone = expected > 0 && done === expected
               return (
                 <td
                   key={dayStr}
-                  className={`border-t border-border px-1 py-2 text-center text-xs text-muted-foreground ${
-                    isCurrentDay ? 'bg-primary/10' : ''
+                  className={`px-1 py-2 text-center ${
+                    isCurrentDay ? 'bg-amber-50 dark:bg-amber-950/30' : ''
                   }`}
+                  style={{ borderTop: '2px solid hsl(var(--border))' }}
                 >
-                  {done}/{expected}
+                  <div className="flex flex-col items-center gap-1">
+                    <span
+                      className={`text-xs font-mono font-bold tabular-nums ${
+                        allDone ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'
+                      }`}
+                    >
+                      {done}/{expected}
+                    </span>
+                    {expected > 0 && (
+                      <div className="w-6 h-[3px] bg-muted overflow-hidden">
+                        <div
+                          className="h-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-300"
+                          style={{ width: `${(done / expected) * 100}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </td>
               )
             })}

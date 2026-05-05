@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { AnimatePresence, LayoutGroup } from 'framer-motion'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { toast } from 'sonner'
 import { HabitCard } from '@/components/habits/HabitCard'
 import { DayProgressBar } from '@/components/layout/DayProgressBar'
@@ -27,23 +27,77 @@ const TIER_ICONS: Record<ChallengeTier, string> = {
 
 // ----- greeting header -----
 
+const TIME_CONFIG = {
+  morning: { accent: '#f59e0b', symbol: '○' },
+  afternoon: { accent: '#38bdf8', symbol: '◑' },
+  evening: { accent: '#818cf8', symbol: '●' },
+} as const
+
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.09 } } }
+const rise = {
+  hidden: { opacity: 0, y: 10 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+  },
+}
+
 function GreetingHeader({ todayDate }: { todayDate: string }) {
   const { t, language } = useAppTranslations()
   const [greeting, setGreeting] = useState<'morning' | 'afternoon' | 'evening'>('morning')
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setGreeting(getGreeting(new Date().getHours()))
+    setMounted(true)
   }, [])
 
   const formattedDate = new Intl.DateTimeFormat(language, { dateStyle: 'long' }).format(
     new Date(todayDate + 'T12:00:00') // noon to avoid timezone drift
   )
 
+  const cfg = TIME_CONFIG[greeting]
+
   return (
-    <div className="space-y-0.5">
-      <h1 className="text-2xl font-bold tracking-tight">{t(`home.greeting.${greeting}`)}</h1>
-      <p className="text-sm text-muted-foreground capitalize">{formattedDate}</p>
-    </div>
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap');`}</style>
+      <motion.div variants={stagger} initial="hidden" animate="show" className="relative">
+        {/* Ambient accent row */}
+        <motion.div variants={rise} className="mb-3 flex items-center gap-2.5">
+          <div
+            className="h-px w-20 rounded-full"
+            style={{ background: `linear-gradient(to right, ${cfg.accent}cc, transparent)` }}
+          />
+          {mounted && (
+            <span
+              className="text-[10px] tracking-[0.3em] uppercase select-none"
+              style={{ fontFamily: "'JetBrains Mono', monospace", color: cfg.accent }}
+            >
+              {cfg.symbol}
+            </span>
+          )}
+        </motion.div>
+
+        {/* Greeting */}
+        <motion.h1
+          variants={rise}
+          className="text-[2rem] leading-[1.1] font-medium text-foreground"
+          style={{ fontFamily: "'Lora', Georgia, serif" }}
+        >
+          {t(`home.greeting.${greeting}`)}
+        </motion.h1>
+
+        {/* Date */}
+        <motion.p
+          variants={rise}
+          className="mt-1.5 text-[11px] tracking-[0.12em] uppercase text-muted-foreground/60 capitalize"
+          style={{ fontFamily: "'JetBrains Mono', monospace" }}
+        >
+          {formattedDate}
+        </motion.p>
+      </motion.div>
+    </>
   )
 }
 
