@@ -1,6 +1,7 @@
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import type { Habit, DayOfWeek, HabitLog } from '@/types/domain'
 import type { Database } from '@/types/database'
+import { calculateMaxStreak } from '@/lib/habits/streak'
 
 type HabitUpdate = Database['public']['Tables']['habits']['Update']
 
@@ -266,6 +267,80 @@ export async function toggleHabitCheck(
       .eq('logged_date', loggedDate)
     if (error) throw new Error(error.message)
   }
+}
+
+// Fetches all logs for multiple habits (no date filter). Returns Map<habitId, Set<loggedDate>>.
+export async function fetchAllHabitLogDates(
+  habitIds: string[],
+  userId: string
+): Promise<Map<string, Set<string>>> {
+  if (habitIds.length === 0) return new Map()
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('habit_id, logged_date')
+    .eq('user_id', userId)
+    .in('habit_id', habitIds)
+  if (error) throw new Error(error.message)
+  const map = new Map<string, Set<string>>()
+  for (const row of data ?? []) {
+    const id = row.habit_id as string
+    const date = row.logged_date as string
+    if (!map.has(id)) map.set(id, new Set())
+    map.get(id)!.add(date)
+  }
+  return map
+}
+
+// Fetches check counts grouped by habit and year for the annual view.
+export async function fetchAnnualConsistency(
+  userId: string
+): Promise<Array<{ habitId: string; year: number; totalChecks: number }>> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('habit_id, logged_date')
+    .eq('user_id', userId)
+  if (error) throw new Error(error.message)
+
+  const map = new Map<string, number>()
+  for (const row of data ?? []) {
+    const year = parseInt((row.logged_date as string).slice(0, 4), 10)
+    const key = `${row.habit_id as string}:${year}`
+    map.set(key, (map.get(key) ?? 0) + 1)
+  }
+
+  return Array.from(map.entries()).map(([key, totalChecks]) => {
+    const colonIdx = key.indexOf(':')
+    return {
+      habitId: key.slice(0, colonIdx),
+      year: parseInt(key.slice(colonIdx + 1), 10),
+      totalChecks,
+    }
+  })
+}
+
+// Calculates the maximum streak for a habit within a specific calendar year.
+export async function fetchMaxStreakForYear(
+  habitId: string,
+  userId: string,
+  year: number,
+  frequency: DayOfWeek[]
+): Promise<number> {
+  const supabase = getSupabaseBrowserClient()
+  const { data, error } = await supabase
+    .from('habit_logs')
+    .select('logged_date')
+    .eq('habit_id', habitId)
+    .eq('user_id', userId)
+    .gte('logged_date', `${year}-01-01`)
+    .lte('logged_date', `${year}-12-31`)
+  if (error) throw new Error(error.message)
+
+  const logs = new Set((data ?? []).map((row) => row.logged_date as string))
+  const yearStart = new Date(year, 0, 1, 12, 0, 0)
+  const yearEnd = new Date(year, 11, 31, 12, 0, 0)
+  return calculateMaxStreak(frequency, logs, yearStart, yearEnd)
 }
 
 // Fetches today's checks for a list of habit_ids. Returns a Set of habit_ids done today.

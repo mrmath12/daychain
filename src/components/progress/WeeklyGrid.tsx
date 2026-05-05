@@ -15,10 +15,6 @@ interface Props {
   isLoadingCell?: Set<string>
 }
 
-function truncateName(name: string, max = 12): string {
-  return name.length > max ? name.slice(0, max) + '…' : name
-}
-
 export function WeeklyGrid({
   habits,
   logsByHabit,
@@ -122,7 +118,7 @@ export function WeeklyGrid({
                       }`}
                       title={habit.name}
                     >
-                      {truncateName(habit.name)}
+                      {habit.name}
                     </span>
                   </div>
                 </td>
@@ -174,7 +170,7 @@ export function WeeklyGrid({
                   <div className="flex flex-col items-center gap-1">
                     <span
                       className={`text-xs font-mono font-bold tabular-nums ${
-                        allDone ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground'
+                        allDone ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'
                       }`}
                     >
                       {done}/{expected}
@@ -182,7 +178,7 @@ export function WeeklyGrid({
                     {expected > 0 && (
                       <div className="w-6 h-[3px] bg-muted overflow-hidden">
                         <div
-                          className="h-full bg-amber-400 dark:bg-amber-500 transition-all duration-300"
+                          className="h-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-300"
                           style={{ width: `${(done / expected) * 100}%` }}
                         />
                       </div>

@@ -7,24 +7,26 @@ import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 const NAV_ITEMS = [
-  { href: '/', icon: Home, labelKey: 'nav.home' },
-  { href: '/progress/week', icon: BarChart2, labelKey: 'nav.progress' },
-  { href: '/challenges', icon: Trophy, labelKey: 'nav.challenges' },
-  { href: '/settings', icon: Settings, labelKey: 'nav.settings' },
-] as const
+  { href: '/', icon: Home, labelKey: 'nav.home', matchPrefix: undefined },
+  { href: '/progress/week', icon: BarChart2, labelKey: 'nav.progress', matchPrefix: '/progress' },
+  { href: '/challenges', icon: Trophy, labelKey: 'nav.challenges', matchPrefix: undefined },
+  { href: '/settings', icon: Settings, labelKey: 'nav.settings', matchPrefix: undefined },
+]
 
 export function Sidebar() {
   const pathname = usePathname()
   const { t } = useAppTranslations()
 
-  function isActive(href: string) {
+  function isActive(href: string, matchPrefix?: string) {
     if (href === '/') return pathname === '/'
-    return pathname.startsWith(href)
+    return pathname.startsWith(matchPrefix ?? href)
   }
 
   return (
     <>
-      <style>{`
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500&display=swap');
 
         .sidebar-root {
@@ -114,7 +116,9 @@ export function Sidebar() {
           background: hsl(var(--background));
           margin-left: 5.5px;
         }
-      `}</style>
+      `,
+        }}
+      />
 
       <aside
         aria-label="Sidebar navigation"
@@ -155,8 +159,8 @@ export function Sidebar() {
 
           {/* Nav */}
           <nav className="flex-1 px-3 py-5">
-            {NAV_ITEMS.map(({ href, icon: Icon, labelKey }, i) => {
-              const active = isActive(href)
+            {NAV_ITEMS.map(({ href, icon: Icon, labelKey, matchPrefix }, i) => {
+              const active = isActive(href, matchPrefix)
               const label = t(labelKey)
               return (
                 <div key={href}>

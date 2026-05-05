@@ -29,7 +29,7 @@ export function Sheet({ open, onOpenChange, title, children, className }: SheetP
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center sm:items-center">
+    <div className="fixed inset-0 z-[55] flex flex-col justify-end sm:justify-center sm:items-center">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50"
