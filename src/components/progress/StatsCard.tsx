@@ -5,8 +5,8 @@ import type { Habit } from '@/types/domain'
 
 export interface StatsCardProps {
   habit: Habit
-  currentStreak: number
-  maxStreak: number
+  currentChain: number
+  maxChain: number
   totalChecks: number
   monthConsistency: number // 0–100
   yearConsistency: number // 0–100
@@ -14,8 +14,8 @@ export interface StatsCardProps {
 
 export function StatsCard({
   habit,
-  currentStreak,
-  maxStreak,
+  currentChain,
+  maxChain,
   totalChecks,
   monthConsistency,
   yearConsistency,
@@ -31,14 +31,14 @@ export function StatsCard({
       </div>
 
       <div className="px-4 py-4 space-y-4">
-        {/* Primary: current streak — prominent when active, absent when zero */}
-        {currentStreak > 0 && (
+        {/* Primary: current chain — prominent when active, absent when zero */}
+        {currentChain > 0 && (
           <div className="pb-4 border-b border-border/60 flex items-baseline gap-2">
             <span className="text-3xl font-mono font-bold tabular-nums leading-none text-amber-500 dark:text-amber-400">
-              {currentStreak}
+              {currentChain}
             </span>
             <span className="text-xs text-muted-foreground font-mono">
-              {t('stats.currentStreak').toLowerCase()}
+              {t('stats.currentChain').toLowerCase()}
             </span>
           </div>
         )}
@@ -79,8 +79,8 @@ export function StatsCard({
         {/* Secondary: historical metrics */}
         <div className="flex gap-6 pt-1">
           <div>
-            <p className="text-sm font-mono font-bold tabular-nums">{maxStreak}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{t('stats.maxStreak')}</p>
+            <p className="text-sm font-mono font-bold tabular-nums">{maxChain}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('stats.maxChain')}</p>
           </div>
           <div>
             <p className="text-sm font-mono font-bold tabular-nums">{totalChecks}</p>

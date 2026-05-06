@@ -6,7 +6,7 @@ export const MAX_CHALLENGE_NAME_LENGTH = 60
 export const MAX_CHALLENGE_REASON_LENGTH = 200
 export const SYNC_RETRY_ATTEMPTS = 3
 export const SYNC_RETRY_DELAY_MS = 30_000
-export const MAX_STREAK_LOOKBACK_DAYS = 730
+export const MAX_CHAIN_LOOKBACK_DAYS = 730
 export const SYNC_QUEUE_STORAGE_KEY = 'daychain:sync_queue'
 export const THEME_STORAGE_KEY = 'daychain:theme'
 export const LANGUAGE_STORAGE_KEY = 'daychain:lang'
@@ -20,6 +20,8 @@ export const CHALLENGE_TIER_DAYS: Record<ChallengeTier, number> = {
   master: 365,
   challenger: 730,
 }
+
+export const MAX_SHIELDS = 5
 
 export const DEFAULT_THEME = 'dark'
 export const DEFAULT_LANGUAGE = 'pt-BR'

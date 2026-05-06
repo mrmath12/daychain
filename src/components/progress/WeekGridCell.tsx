@@ -25,6 +25,42 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
     )
   }
 
+  if (state === 'off') {
+    return (
+      <button
+        type="button"
+        aria-label="Marcar dia extra"
+        onClick={onToggle}
+        disabled={isLoading}
+        className={`${base} relative group/off ${isLoading ? 'opacity-50' : ''}`}
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(-45deg, transparent, transparent 3px, hsl(var(--muted)) 3px, hsl(var(--muted)) 4px)',
+        }}
+      >
+        <div className="absolute inset-0 bg-blue-500/0 group-hover/off:bg-blue-500/15 transition-colors duration-150" />
+      </button>
+    )
+  }
+
+  if (state === 'off-done') {
+    return (
+      <button
+        type="button"
+        aria-label="Desmarcar dia extra"
+        onClick={onToggle}
+        disabled={isLoading}
+        className={`${base} bg-blue-400/20 dark:bg-blue-500/20 transition-all ${
+          isLoading
+            ? 'opacity-50'
+            : 'hover:bg-blue-300/30 dark:hover:bg-blue-400/30 active:scale-95'
+        }`}
+      >
+        <Check className="h-[18px] w-[18px] text-blue-500 dark:text-blue-400" strokeWidth={3} />
+      </button>
+    )
+  }
+
   if (state === 'future') {
     return (
       <div className={`${base} cursor-default opacity-20`} aria-hidden="true">

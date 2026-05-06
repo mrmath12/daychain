@@ -5,18 +5,18 @@ import { parseISO, startOfMonth, startOfYear } from 'date-fns'
 import { StatsCard } from '@/components/progress/StatsCard'
 import { fetchActiveHabits, fetchAllHabitLogDates } from '@/lib/habits/queries'
 import {
-  calculateCurrentStreak,
-  calculateMaxStreak,
+  calculateCurrentChain,
+  calculateMaxChain,
   calculateConsistencyPercentage,
-} from '@/lib/habits/streak'
+} from '@/lib/habits/chain'
 import { env } from '@/env'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 import type { Habit } from '@/types/domain'
 
 interface HabitStats {
   habit: Habit
-  currentStreak: number
-  maxStreak: number
+  currentChain: number
+  maxChain: number
   totalChecks: number
   monthConsistency: number
   yearConsistency: number
@@ -54,8 +54,8 @@ export default function StatsPage() {
 
           return {
             habit,
-            currentStreak: calculateCurrentStreak(habit.frequency, logs, today),
-            maxStreak: calculateMaxStreak(habit.frequency, logs, createdAt, today),
+            currentChain: calculateCurrentChain(habit.frequency, logs, today),
+            maxChain: calculateMaxChain(habit.frequency, logs, createdAt, today),
             totalChecks: logs.size,
             monthConsistency: calculateConsistencyPercentage(
               habit.frequency,
@@ -72,7 +72,7 @@ export default function StatsPage() {
           }
         })
 
-        computed.sort((a, b) => b.currentStreak - a.currentStreak)
+        computed.sort((a, b) => b.currentChain - a.currentChain)
         setStats(computed)
       } catch {
         // leave empty state visible
@@ -103,12 +103,12 @@ export default function StatsPage() {
     <div className="overflow-hidden border border-border rounded-xl">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-border">
         {stats.map(
-          ({ habit, currentStreak, maxStreak, totalChecks, monthConsistency, yearConsistency }) => (
+          ({ habit, currentChain, maxChain, totalChecks, monthConsistency, yearConsistency }) => (
             <StatsCard
               key={habit.id}
               habit={habit}
-              currentStreak={currentStreak}
-              maxStreak={maxStreak}
+              currentChain={currentChain}
+              maxChain={maxChain}
               totalChecks={totalChecks}
               monthConsistency={monthConsistency}
               yearConsistency={yearConsistency}

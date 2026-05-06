@@ -7,6 +7,8 @@ export type CellState =
   | 'pending'
   | 'future'
   | 'not-expected'
+  | 'off'
+  | 'off-done'
   | 'archived-done'
   | 'archived-pending'
 
@@ -20,21 +22,22 @@ export function determineCellState(
   const isArchived = habit.archivedAt !== null
   const dayOfWeek = getISODay(parseLocalDate(dateStr)) as DayOfWeek
   const isExpectedDay = habit.frequency.includes(dayOfWeek)
-  const createdDate = habit.createdAt.slice(0, 10) // UTC date from ISO timestamp
+  const createdDate = habit.createdAt.slice(0, 10)
   const isBeforeCreation = dateStr < createdDate
   const isFuture = dateStr > today
 
-  if (!isExpectedDay || isBeforeCreation) {
-    return 'not-expected'
+  if (isBeforeCreation) return 'not-expected'
+
+  if (!isExpectedDay) {
+    if (isFuture) return 'not-expected'
+    return isDone ? 'off-done' : 'off'
   }
 
   if (isArchived) {
     return isDone ? 'archived-done' : 'archived-pending'
   }
 
-  if (isFuture) {
-    return 'future'
-  }
+  if (isFuture) return 'future'
 
   return isDone ? 'done' : 'pending'
 }

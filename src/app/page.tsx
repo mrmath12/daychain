@@ -1,8 +1,7 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { env } from '@/env'
 import { getTodayLocalDate, getHabitsForToday } from '@/lib/utils/date'
-import { calculateCurrentStreak } from '@/lib/habits/streak'
-import { calcularProgressoDesafio } from '@/lib/habits/streak'
+import { calculateChainWithShields, calcularProgressoDesafio } from '@/lib/habits/chain'
 import { format, subDays } from 'date-fns'
 import { HabitDashboard } from '@/components/home/HabitDashboard'
 import type { Habit, Challenge, DayOfWeek, ChallengeStatus, ChallengeTier } from '@/types/domain'
@@ -53,7 +52,9 @@ export default async function HomePage() {
 
   const allHabits: Habit[] = (habitsData ?? []).map(mapHabit)
   const habitsForToday = getHabitsForToday(allHabits)
-  const habitIdsForToday = habitsForToday.map((h) => h.id)
+  const habitIdsForTodaySet = new Set(habitsForToday.map((h) => h.id))
+  const habitsOther = allHabits.filter((h) => !habitIdsForTodaySet.has(h.id))
+  const allHabitIds = allHabits.map((h) => h.id)
 
   // 2. Active challenges (max 3 for dashboard)
   const { data: challengesData } = await supabase
@@ -67,8 +68,8 @@ export default async function HomePage() {
   const challenges: Challenge[] = (challengesData ?? []).map(mapChallenge)
   const challengeHabitIds = challenges.map((c) => c.habitId)
 
-  // 3. Logs for streaks + challenge progress (one query covers both)
-  const allRelevantIds = Array.from(new Set([...habitIdsForToday, ...challengeHabitIds]))
+  // 3. Logs for all habits + challenges (single query)
+  const allRelevantIds = Array.from(new Set([...allHabitIds, ...challengeHabitIds]))
 
   let rawLogs: Array<{ habit_id: string; logged_date: string }> = []
   if (allRelevantIds.length > 0) {
@@ -89,16 +90,19 @@ export default async function HomePage() {
     logsByHabit.set(row.habit_id, set)
   }
 
-  // 4. Today's checks — derived from the logs we already fetched
-  const todayChecks: string[] = habitIdsForToday.filter((id) =>
+  // 4. Today's checks — all habits (off-day habits may also be checked today)
+  const todayChecks: string[] = allHabitIds.filter((id) =>
     (logsByHabit.get(id) ?? new Set()).has(todayDate)
   )
 
-  // 5. Streak per habit (counts from yesterday backwards; today still open)
-  const streaks: Record<string, number> = {}
-  for (const habit of habitsForToday) {
+  // 5. Chain and shields for all habits
+  const chains: Record<string, number> = {}
+  const shieldsMap: Record<string, number> = {}
+  for (const habit of allHabits) {
     const logs = logsByHabit.get(habit.id) ?? new Set<string>()
-    streaks[habit.id] = calculateCurrentStreak(habit.frequency, logs, today)
+    const { chain, shields } = calculateChainWithShields(habit.frequency, logs, today)
+    chains[habit.id] = chain
+    shieldsMap[habit.id] = shields
   }
 
   // 6. Challenge progress from the same log set
@@ -116,8 +120,10 @@ export default async function HomePage() {
   return (
     <HabitDashboard
       initialHabits={habitsForToday}
+      initialOtherHabits={habitsOther}
       initialChecks={todayChecks}
-      initialStreaks={streaks}
+      initialChains={chains}
+      initialShields={shieldsMap}
       initialChallenges={challenges}
       challengeProgresses={challengeProgresses}
       todayDate={todayDate}

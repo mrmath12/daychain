@@ -85,7 +85,7 @@ function GreetingHeader({ todayDate }: { todayDate: string }) {
           className="text-[2rem] leading-[1.1] font-medium text-foreground"
           style={{ fontFamily: "'Lora', Georgia, serif" }}
         >
-          {t(`home.greeting.${greeting}`)}
+          {t(`home.greeting.${greeting}`) + ', "nome do usuário"'}
         </motion.h1>
 
         {/* Date */}
@@ -162,8 +162,10 @@ function ChallengeDashCard({ challenge, progress, onAbandon }: ChallengeDashCard
 
 interface HabitDashboardProps {
   initialHabits: Habit[]
+  initialOtherHabits: Habit[]
   initialChecks: string[] // array for JSON serialization across server→client boundary
-  initialStreaks: Record<string, number>
+  initialChains: Record<string, number>
+  initialShields: Record<string, number>
   initialChallenges: Challenge[]
   challengeProgresses: Record<string, number>
   todayDate: string // "YYYY-MM-DD" local date
@@ -172,8 +174,10 @@ interface HabitDashboardProps {
 
 export function HabitDashboard({
   initialHabits,
+  initialOtherHabits,
   initialChecks,
-  initialStreaks,
+  initialChains,
+  initialShields,
   initialChallenges,
   challengeProgresses,
   todayDate,
@@ -184,6 +188,7 @@ export function HabitDashboard({
   const { enqueueCheck, pendingHabitIds } = useSyncQueue(userId)
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set(initialChecks))
   const [challenges, setChallenges] = useState<Challenge[]>(initialChallenges)
+  const [showOther, setShowOther] = useState(false)
   // Rastreia se o toast "offline" já foi exibido nesta sessão
   const offlineToastShownRef = useRef(false)
 
@@ -265,7 +270,8 @@ export function HabitDashboard({
                 key={habit.id}
                 habit={habit}
                 isDone={checkedIds.has(habit.id)}
-                currentStreak={initialStreaks[habit.id] ?? 0}
+                currentChain={initialChains[habit.id] ?? 0}
+                shields={initialShields[habit.id] ?? 0}
                 onMarkDone={() => handleToggle(habit.id, true)}
                 onMarkUndone={() => handleToggle(habit.id, false)}
                 hasPendingSync={pendingHabitIds.has(habit.id)}
@@ -274,6 +280,40 @@ export function HabitDashboard({
           </AnimatePresence>
         </div>
       </LayoutGroup>
+
+      {/* Off-day habits — collapsible, earns shields */}
+      {initialOtherHabits.length > 0 && (
+        <section className="space-y-2">
+          <button
+            onClick={() => setShowOther((v) => !v)}
+            className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <span>{showOther ? '▾' : '▸'}</span>
+            <span>Outros hábitos</span>
+            <span className="text-blue-400">🛡️</span>
+            <span className="text-muted-foreground/50">({initialOtherHabits.length})</span>
+          </button>
+
+          {showOther && (
+            <AnimatePresence initial={false}>
+              <div className="space-y-2">
+                {initialOtherHabits.map((habit) => (
+                  <HabitCard
+                    key={habit.id}
+                    habit={habit}
+                    isDone={checkedIds.has(habit.id)}
+                    currentChain={initialChains[habit.id] ?? 0}
+                    shields={initialShields[habit.id] ?? 0}
+                    onMarkDone={() => handleToggle(habit.id, true)}
+                    onMarkUndone={() => handleToggle(habit.id, false)}
+                    hasPendingSync={pendingHabitIds.has(habit.id)}
+                  />
+                ))}
+              </div>
+            </AnimatePresence>
+          )}
+        </section>
+      )}
 
       {/* Active challenges section — hidden if no challenges */}
       {challenges.length > 0 && (
