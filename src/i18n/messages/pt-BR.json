@@ -7,6 +7,7 @@
     "archive": "Arquivar",
     "abandon": "Abandonar",
     "edit": "Editar",
+    "close": "Fechar",
     "loading": "Carregando...",
     "error": "Algo deu errado",
     "noConnection": "Sem conexão. As marcações serão salvas ao reconectar.",
@@ -27,7 +28,9 @@
     },
     "progress": "{done} / {total} hábitos feitos",
     "activeChallenges": "Desafios ativos",
-    "noChallenges": ""
+    "noChallenges": "",
+    "noHabitsToday": "Nenhum hábito para hoje.",
+    "otherHabits": "Outros hábitos"
   },
   "habits": {
     "title": "Hábitos",
@@ -44,8 +47,17 @@
     "archiveWithChallenges": "\n{count} desafio(s) ativo(s) será(ão) marcado(s) como abandonado(s).",
     "archivedToast": "{emoji} {name} foi arquivado.",
     "archivedWithChallenges": " {count} desafio(s) abandonado(s).",
+    "deletedToast": "{emoji} {name} excluído.",
     "deleteConfirm1": "Tem certeza?",
     "deleteConfirm2": "Isso não pode ser desfeito.",
+    "deletePermConfirm": "Esta ação é permanente e não pode ser desfeita.",
+    "activeCount": "{count} ativo(s)",
+    "noActiveHabits": "Nenhum hábito ativo. Crie o primeiro!",
+    "archivedSection": "Arquivados",
+    "reorder": "Reordenar",
+    "editHabit": "Editar {name}",
+    "toggleDone": "Marcar {name} como feito",
+    "toggleUndone": "Desfazer {name}",
     "days": {
       "1": "Seg",
       "2": "Ter",
@@ -77,7 +89,8 @@
     "prevWeek": "Semana anterior",
     "nextWeek": "Próxima semana",
     "prevMonth": "Mês anterior",
-    "nextMonth": "Próximo mês"
+    "nextMonth": "Próximo mês",
+    "statsTitle": "Status"
   },
   "stats": {
     "currentChain": "Chain atual",

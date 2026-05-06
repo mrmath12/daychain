@@ -7,6 +7,7 @@
     "archive": "Archive",
     "abandon": "Abandon",
     "edit": "Edit",
+    "close": "Close",
     "loading": "Loading...",
     "error": "Something went wrong",
     "noConnection": "No connection. Check-ins will be saved when you reconnect.",
@@ -27,7 +28,9 @@
     },
     "progress": "{done} / {total} habits done",
     "activeChallenges": "Active challenges",
-    "noChallenges": ""
+    "noChallenges": "",
+    "noHabitsToday": "No habits for today.",
+    "otherHabits": "Other habits"
   },
   "habits": {
     "title": "Habits",
@@ -44,8 +47,17 @@
     "archiveWithChallenges": "\n{count} active challenge(s) will be marked as abandoned.",
     "archivedToast": "{emoji} {name} was archived.",
     "archivedWithChallenges": " {count} challenge(s) abandoned.",
+    "deletedToast": "{emoji} {name} deleted.",
     "deleteConfirm1": "Are you sure?",
     "deleteConfirm2": "This cannot be undone.",
+    "deletePermConfirm": "This action is permanent and cannot be undone.",
+    "activeCount": "{count} active",
+    "noActiveHabits": "No active habits. Create your first!",
+    "archivedSection": "Archived",
+    "reorder": "Reorder",
+    "editHabit": "Edit {name}",
+    "toggleDone": "Mark {name} as done",
+    "toggleUndone": "Undo {name}",
     "days": {
       "1": "Mon",
       "2": "Tue",
@@ -77,7 +89,8 @@
     "prevWeek": "Previous week",
     "nextWeek": "Next week",
     "prevMonth": "Previous month",
-    "nextMonth": "Next month"
+    "nextMonth": "Next month",
+    "statsTitle": "Status"
   },
   "stats": {
     "currentChain": "Current chain",

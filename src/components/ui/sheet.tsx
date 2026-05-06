@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAppTranslations } from '@/hooks/useAppTranslations'
 
 interface SheetProps {
   open: boolean
@@ -13,6 +14,7 @@ interface SheetProps {
 }
 
 export function Sheet({ open, onOpenChange, title, children, className }: SheetProps) {
+  const { t } = useAppTranslations()
   useEffect(() => {
     if (!open) return
     const handleEsc = (e: KeyboardEvent) => {
@@ -52,7 +54,7 @@ export function Sheet({ open, onOpenChange, title, children, className }: SheetP
           </h2>
           <button
             onClick={() => onOpenChange(false)}
-            aria-label="Fechar"
+            aria-label={t('common.close')}
             className="rounded-md p-1 hover:bg-accent transition-colors"
           >
             <X size={18} />

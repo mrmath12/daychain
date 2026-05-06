@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { useAppTranslations } from '@/hooks/useAppTranslations'
 
 interface ConfirmDialogProps {
   open: boolean
@@ -16,11 +17,12 @@ export function ConfirmDialog({
   open,
   title,
   description,
-  confirmLabel = 'Confirmar',
+  confirmLabel,
   onConfirm,
   onCancel,
   isDestructive = false,
 }: ConfirmDialogProps) {
+  const { t } = useAppTranslations()
   if (!open) return null
 
   return (
@@ -44,7 +46,7 @@ export function ConfirmDialog({
             onClick={onCancel}
             className="rounded-md border border-input px-4 py-2 text-sm hover:bg-accent transition-colors"
           >
-            Cancelar
+            {t('common.cancel')}
           </button>
           <button
             onClick={onConfirm}
@@ -55,7 +57,7 @@ export function ConfirmDialog({
                 : 'bg-primary text-primary-foreground hover:bg-primary/90'
             )}
           >
-            {confirmLabel}
+            {confirmLabel ?? t('common.confirm')}
           </button>
         </div>
       </div>

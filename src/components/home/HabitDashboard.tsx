@@ -85,7 +85,7 @@ function GreetingHeader({ todayDate }: { todayDate: string }) {
           className="text-[2rem] leading-[1.1] font-medium text-foreground"
           style={{ fontFamily: "'Lora', Georgia, serif" }}
         >
-          {t(`home.greeting.${greeting}`) + ', "nome do usuário"'}
+          {t(`home.greeting.${greeting}`)}
         </motion.h1>
 
         {/* Date */}
@@ -261,7 +261,7 @@ export function HabitDashboard({
         <div className="space-y-2">
           {sortedHabits.length === 0 && (
             <p className="py-8 text-center text-sm text-muted-foreground">
-              Nenhum hábito para hoje.
+              {t('home.noHabitsToday')}
             </p>
           )}
           <AnimatePresence initial={false}>
@@ -289,7 +289,7 @@ export function HabitDashboard({
             className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
           >
             <span>{showOther ? '▾' : '▸'}</span>
-            <span>Outros hábitos</span>
+            <span>{t('home.otherHabits')}</span>
             <span className="text-blue-400">🛡️</span>
             <span className="text-muted-foreground/50">({initialOtherHabits.length})</span>
           </button>
