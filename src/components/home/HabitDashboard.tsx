@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { toast } from 'sonner'
 import { HabitCard } from '@/components/habits/HabitCard'
@@ -8,9 +8,9 @@ import { DayProgressBar } from '@/components/layout/DayProgressBar'
 import { toggleHabitCheck } from '@/lib/habits/queries'
 import { abandonChallenge } from '@/lib/challenges/queries'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
+import { useSyncQueue } from '@/hooks/useSyncQueue'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { getGreeting } from '@/lib/utils/date'
-import { enqueue } from '@/lib/sync/queue'
 import type { Habit, Challenge, ChallengeTier } from '@/types/domain'
 
 // ----- tier icons -----
@@ -180,11 +180,12 @@ export function HabitDashboard({
   userId,
 }: HabitDashboardProps) {
   const { t } = useAppTranslations()
-  const isOnline = useOnlineStatus()
+  const { isOnline } = useOnlineStatus()
+  const { enqueueCheck, pendingHabitIds } = useSyncQueue(userId)
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set(initialChecks))
-  const [pendingSyncIds, setPendingSyncIds] = useState<Set<string>>(new Set())
-  const [offlineToastShown, setOfflineToastShown] = useState(false)
   const [challenges, setChallenges] = useState<Challenge[]>(initialChallenges)
+  // Rastreia se o toast "offline" já foi exibido nesta sessão
+  const offlineToastShownRef = useRef(false)
 
   // Sort: pending on top → done at the bottom; within each group preserve sortOrder
   const sortedHabits = [...initialHabits].sort((a, b) => {
@@ -196,7 +197,7 @@ export function HabitDashboard({
 
   const handleToggle = useCallback(
     async (habitId: string, value: boolean) => {
-      // Optimistic update — UI updates immediately before server confirms
+      // Optimistic update — UI atualiza imediatamente
       setCheckedIds((prev) => {
         const next = new Set(prev)
         if (value) next.add(habitId)
@@ -205,32 +206,18 @@ export function HabitDashboard({
       })
 
       if (!isOnline) {
-        enqueue({
-          id: `${habitId}-${Date.now()}`,
-          type: 'toggle_check',
-          habit_id: habitId,
-          logged_date: todayDate,
-          value,
-          timestamp: Date.now(),
-        })
-        setPendingSyncIds((prev) => new Set(prev).add(habitId))
-        if (!offlineToastShown) {
+        enqueueCheck(habitId, todayDate, value)
+        if (!offlineToastShownRef.current) {
           toast.warning(t('common.noConnection'))
-          setOfflineToastShown(true)
+          offlineToastShownRef.current = true
         }
         return
       }
 
       try {
         await toggleHabitCheck(habitId, userId, todayDate, value)
-        // Remove from pending if it was there
-        setPendingSyncIds((prev) => {
-          const next = new Set(prev)
-          next.delete(habitId)
-          return next
-        })
       } catch {
-        // Revert optimistic update on server error
+        // Reverter optimistic update em caso de erro no servidor
         setCheckedIds((prev) => {
           const next = new Set(prev)
           if (value) next.delete(habitId)
@@ -240,7 +227,7 @@ export function HabitDashboard({
         toast.error(t('common.error'))
       }
     },
-    [isOnline, offlineToastShown, todayDate, userId, t]
+    [isOnline, enqueueCheck, todayDate, userId, t]
   )
 
   const handleAbandonChallenge = useCallback(
@@ -281,7 +268,7 @@ export function HabitDashboard({
                 currentStreak={initialStreaks[habit.id] ?? 0}
                 onMarkDone={() => handleToggle(habit.id, true)}
                 onMarkUndone={() => handleToggle(habit.id, false)}
-                hasPendingSync={pendingSyncIds.has(habit.id)}
+                hasPendingSync={pendingHabitIds.has(habit.id)}
               />
             ))}
           </AnimatePresence>

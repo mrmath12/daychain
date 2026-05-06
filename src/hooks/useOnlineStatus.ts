@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-export function useOnlineStatus(): boolean {
+export function useOnlineStatus(): { isOnline: boolean } {
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== 'undefined' ? navigator.onLine : true
   )
@@ -20,5 +20,5 @@ export function useOnlineStatus(): boolean {
     }
   }, [])
 
-  return isOnline
+  return { isOnline }
 }
