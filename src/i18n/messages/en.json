@@ -148,5 +148,27 @@
   },
   "offline": {
     "cannotCreateOffline": "No connection. Create habits when online."
+  },
+  "auth": {
+    "login": "Sign in",
+    "register": "Create account",
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create your account",
+    "loginField": "Email or @username",
+    "emailField": "Email",
+    "usernameField": "Username",
+    "passwordField": "Password",
+    "confirmPasswordField": "Confirm password",
+    "loginButton": "Sign in",
+    "registerButton": "Create account",
+    "switchToRegister": "No account? Create one",
+    "switchToLogin": "Already have an account? Sign in",
+    "invalidCredentials": "Incorrect username or password",
+    "usernameTaken": "This username is already taken",
+    "usernameInvalid": "Letters, numbers and _ only (3–20 characters)",
+    "passwordTooShort": "Minimum 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "signOut": "Sign out",
+    "account": "Account"
   }
 }

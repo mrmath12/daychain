@@ -148,5 +148,27 @@
   },
   "offline": {
     "cannotCreateOffline": "Sem conexão. Crie hábitos quando online."
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Criar conta",
+    "loginTitle": "Bem-vindo de volta",
+    "registerTitle": "Crie sua conta",
+    "loginField": "Email ou @username",
+    "emailField": "Email",
+    "usernameField": "Username",
+    "passwordField": "Senha",
+    "confirmPasswordField": "Confirmar senha",
+    "loginButton": "Entrar",
+    "registerButton": "Criar conta",
+    "switchToRegister": "Não tem conta? Criar conta",
+    "switchToLogin": "Já tem conta? Entrar",
+    "invalidCredentials": "Usuário ou senha incorretos",
+    "usernameTaken": "Este username já está em uso",
+    "usernameInvalid": "Apenas letras, números e _ (3–20 caracteres)",
+    "passwordTooShort": "Mínimo 8 caracteres",
+    "passwordMismatch": "As senhas não coincidem",
+    "signOut": "Sair",
+    "account": "Conta"
   }
 }
