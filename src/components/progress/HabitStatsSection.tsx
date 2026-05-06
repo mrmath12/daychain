@@ -106,7 +106,9 @@ export function HabitStatsSection({ userId, referenceDate }: HabitStatsSectionPr
 
   return (
     <div className="mb-4">
-      <h2 className="mt-6 text-3xl font-mono font-bold tabular-nums leading-none">Status</h2>
+      <h2 className="mt-6 text-3xl font-mono font-bold tabular-nums leading-none">
+        {t('progress.statsTitle')}
+      </h2>
       <div className="mt-2 overflow-hidden border border-border rounded-xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border">
           {stats.map(

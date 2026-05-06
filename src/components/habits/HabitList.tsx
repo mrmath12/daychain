@@ -49,6 +49,7 @@ function SortableItem({
   onEdit: () => void
   onArchive: () => void
 }) {
+  const { t } = useAppTranslations()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: habit.id,
   })
@@ -68,7 +69,7 @@ function SortableItem({
       <button
         {...attributes}
         {...listeners}
-        aria-label="Reordenar"
+        aria-label={t('habits.reorder')}
         className="cursor-grab active:cursor-grabbing text-muted-foreground p-1 touch-none shrink-0"
       >
         <GripVertical size={16} />
@@ -76,7 +77,7 @@ function SortableItem({
       <button
         onClick={onEdit}
         className="flex-1 flex items-center gap-2 text-left min-w-0"
-        aria-label={`Editar ${habit.name}`}
+        aria-label={t('habits.editHabit', { name: habit.name })}
       >
         <span className="text-lg shrink-0">{habit.emoji}</span>
         <span className="text-sm font-medium truncate">{habit.name}</span>
@@ -85,7 +86,7 @@ function SortableItem({
         onClick={onArchive}
         className="rounded px-2 py-1 text-xs text-muted-foreground hover:bg-accent transition-colors shrink-0"
       >
-        Arquivar
+        {t('common.archive')}
       </button>
     </div>
   )
@@ -102,6 +103,7 @@ function ArchivedItem({
   canDelete: boolean
   onDelete: () => void
 }) {
+  const { t } = useAppTranslations()
   return (
     <div className="flex items-center gap-2 rounded-lg border border-dashed bg-muted/30 px-3 py-3 opacity-70">
       <span className="text-lg shrink-0">{habit.emoji}</span>
@@ -112,7 +114,7 @@ function ArchivedItem({
           onClick={onDelete}
           className="rounded px-2 py-1 text-xs text-destructive hover:bg-destructive/10 transition-colors shrink-0"
         >
-          Excluir
+          {t('common.delete')}
         </button>
       )}
     </div>
@@ -244,7 +246,7 @@ export function HabitList({
     setDeleteState(null)
     try {
       await onDelete(habit.id)
-      toast(`${habit.emoji} ${habit.name} excluído.`)
+      toast(t('habits.deletedToast', { emoji: habit.emoji, name: habit.name }))
     } catch {
       toast.error(t('common.error'))
     }
@@ -286,7 +288,9 @@ export function HabitList({
       <div className="space-y-4 p-4">
         {/* Header row */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">{activeHabits.length} ativo(s)</span>
+          <span className="text-sm text-muted-foreground">
+            {t('habits.activeCount', { count: activeHabits.length })}
+          </span>
           <button
             onClick={() => setFormState({ open: true })}
             className="rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -323,7 +327,7 @@ export function HabitList({
 
         {!isLoading && activeHabits.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-6">
-            Nenhum hábito ativo. Crie o primeiro!
+            {t('habits.noActiveHabits')}
           </p>
         )}
 
@@ -331,7 +335,7 @@ export function HabitList({
         {archivedHabits.length > 0 && (
           <div className="space-y-2 pt-2">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Arquivados
+              {t('habits.archivedSection')}
             </p>
             {archivedHabits.map((habit) => (
               <ArchivedItem
@@ -387,7 +391,7 @@ export function HabitList({
       <ConfirmDialog
         open={deleteState?.step === 2}
         title={t('habits.deleteConfirm2')}
-        description="Esta ação é permanente e não pode ser desfeita."
+        description={t('habits.deletePermConfirm')}
         confirmLabel={t('common.delete')}
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteState(null)}

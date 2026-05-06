@@ -5,6 +5,7 @@ import { motion, useMotionValue, animate } from 'framer-motion'
 import { useDrag } from '@use-gesture/react'
 import { RefreshCw } from 'lucide-react'
 import { SWIPE_THRESHOLD_PERCENTAGE } from '@/lib/utils/constants'
+import { useAppTranslations } from '@/hooks/useAppTranslations'
 import type { Habit } from '@/types/domain'
 
 interface HabitCardProps {
@@ -26,6 +27,7 @@ export function HabitCard({
   onMarkUndone,
   hasPendingSync = false,
 }: HabitCardProps) {
+  const { t } = useAppTranslations()
   const cardRef = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
   // 'none' | 'right' | 'left' — only updates on threshold crossing, not every pixel
@@ -112,7 +114,11 @@ export function HabitCard({
                   ? 'border-green-500 bg-green-500 text-white'
                   : 'border-muted-foreground hover:border-green-500'
               }`}
-              aria-label={isDone ? `Desfazer ${habit.name}` : `Marcar ${habit.name} como feito`}
+              aria-label={
+                isDone
+                  ? t('habits.toggleUndone', { name: habit.name })
+                  : t('habits.toggleDone', { name: habit.name })
+              }
             >
               {isDone ? '✓' : ''}
             </button>
