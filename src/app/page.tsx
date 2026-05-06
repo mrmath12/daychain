@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import { env } from '@/env'
+import { getServerUserId } from '@/lib/supabase/getServerUserId'
 import { getTodayLocalDate, getHabitsForToday } from '@/lib/utils/date'
 import { calculateChainWithShields, calcularProgressoDesafio } from '@/lib/habits/chain'
 import { format, subDays } from 'date-fns'
@@ -36,7 +36,7 @@ function mapChallenge(row: Record<string, unknown>): Challenge {
 }
 
 export default async function HomePage() {
-  const userId = env.NEXT_PUBLIC_HARDCODED_USER_ID
+  const userId = await getServerUserId()
   const supabase = getSupabaseServerClient()
   const today = new Date()
   const todayDate = getTodayLocalDate()
@@ -127,7 +127,6 @@ export default async function HomePage() {
       initialChallenges={challenges}
       challengeProgresses={challengeProgresses}
       todayDate={todayDate}
-      userId={userId}
     />
   )
 }

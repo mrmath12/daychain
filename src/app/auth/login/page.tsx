@@ -8,7 +8,9 @@ function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  return <AuthForm mode="login" onSuccess={() => router.push(searchParams.get('next') ?? '/')} />
+  return (
+    <AuthForm mode="login" onSuccess={() => router.push(searchParams.get('next') ?? '/home')} />
+  )
 }
 
 export default function LoginPage() {

@@ -18,7 +18,6 @@ import {
   navigateMonth,
 } from '@/lib/utils/date'
 import { getArchivedHabitsWithLogsInPeriod } from '@/lib/habits/utils'
-import { env } from '@/env'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 import type { Habit } from '@/types/domain'
 
@@ -27,7 +26,6 @@ function MonthPageContent() {
   const router = useRouter()
   const { t, language } = useAppTranslations()
 
-  const userId = env.NEXT_PUBLIC_HARDCODED_USER_ID
   const currentMonthId = getMonthIdentifier(new Date())
 
   const monthParam = searchParams.get('m')
@@ -48,10 +46,9 @@ function MonthPageContent() {
   const loadData = useCallback(async () => {
     setIsLoading(true)
     try {
-      const allHabits = await fetchAllHabits(userId)
+      const allHabits = await fetchAllHabits()
       const logs = await fetchHabitLogsByHabitsAndPeriod(
         allHabits.map((h) => h.id),
-        userId,
         startDate,
         endDate
       )
@@ -67,7 +64,7 @@ function MonthPageContent() {
     } finally {
       setIsLoading(false)
     }
-  }, [userId, startDate, endDate])
+  }, [startDate, endDate])
 
   useEffect(() => {
     loadData()
@@ -87,7 +84,7 @@ function MonthPageContent() {
     })
 
     try {
-      await toggleHabitCheck(habitId, userId, date, !currentValue)
+      await toggleHabitCheck(habitId, date, !currentValue)
     } catch {
       setLogsByHabit((prev) => {
         const next = new Map(prev)
@@ -156,7 +153,7 @@ function MonthPageContent() {
           isLoadingCell={isLoadingCell}
         />
       )}
-      <HabitStatsSection userId={userId} referenceDate={startDate} />
+      <HabitStatsSection referenceDate={startDate} />
     </div>
   )
 }

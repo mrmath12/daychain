@@ -204,7 +204,7 @@ export function HabitList({
 
   const handleArchiveRequest = useCallback(async (habit: Habit) => {
     try {
-      const active = await getChallenges(habit.userId, 'active')
+      const active = await getChallenges('active')
       const count = active.filter((c) => c.habitId === habit.id).length
       setArchiveState({ habit, challengeCount: count })
     } catch {

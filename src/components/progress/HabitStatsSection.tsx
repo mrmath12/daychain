@@ -22,12 +22,11 @@ interface HabitStats {
 }
 
 interface HabitStatsSectionProps {
-  userId: string
   // ISO date string (YYYY-MM-DD) that anchors the month and year used for consistency metrics
   referenceDate: string
 }
 
-export function HabitStatsSection({ userId, referenceDate }: HabitStatsSectionProps) {
+export function HabitStatsSection({ referenceDate }: HabitStatsSectionProps) {
   const { t } = useAppTranslations()
   const [stats, setStats] = useState<HabitStats[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -38,16 +37,13 @@ export function HabitStatsSection({ userId, referenceDate }: HabitStatsSectionPr
     async function load() {
       setIsLoading(true)
       try {
-        const activeHabits = await fetchActiveHabits(userId)
+        const activeHabits = await fetchActiveHabits()
         if (activeHabits.length === 0) {
           if (!cancelled) setStats([])
           return
         }
 
-        const allLogs = await fetchAllHabitLogDates(
-          activeHabits.map((h) => h.id),
-          userId
-        )
+        const allLogs = await fetchAllHabitLogDates(activeHabits.map((h) => h.id))
 
         const ref = parseISO(referenceDate)
         const today = new Date()
@@ -92,7 +88,7 @@ export function HabitStatsSection({ userId, referenceDate }: HabitStatsSectionPr
     return () => {
       cancelled = true
     }
-  }, [userId, referenceDate])
+  }, [referenceDate])
 
   if (isLoading) {
     return (

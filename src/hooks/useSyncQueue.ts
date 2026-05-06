@@ -13,7 +13,7 @@ import {
 import { toggleHabitCheck } from '@/lib/habits/queries'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 
-export function useSyncQueue(userId: string) {
+export function useSyncQueue() {
   const { t } = useAppTranslations()
   const [pendingHabitIds, setPendingHabitIds] = useState<Set<string>>(new Set())
   const [pendingCount, setPendingCount] = useState(0)
@@ -62,7 +62,7 @@ export function useSyncQueue(userId: string) {
       }
 
       try {
-        await toggleHabitCheck(op.habitId, userId, op.loggedDate, op.value)
+        await toggleHabitCheck(op.habitId, op.loggedDate, op.value)
         dequeueOperation(op.id)
         setPendingHabitIds((prev) => {
           const next = new Set(prev)
@@ -93,7 +93,7 @@ export function useSyncQueue(userId: string) {
         void processQueueRef.current?.()
       }, SYNC_RETRY_DELAY_MS)
     }
-  }, [userId, t])
+  }, [t])
 
   // Mantém a ref sempre atualizada com a versão mais recente do callback
   useEffect(() => {

@@ -3,6 +3,17 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import { CHALLENGE_TIER_DAYS } from '@/lib/utils/constants'
 import type { Challenge, ChallengeStatus, ChallengeTier } from '@/types/domain'
 
+// ----- auth helper -----
+
+async function getAuthContext() {
+  const supabase = getSupabaseBrowserClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+  return { supabase, userId: user.id }
+}
+
 // ----- mapper -----
 
 function mapChallenge(row: Record<string, unknown>): Challenge {
@@ -23,11 +34,8 @@ function mapChallenge(row: Record<string, unknown>): Challenge {
 
 // ----- read -----
 
-export async function fetchChallenges(
-  userId: string,
-  status?: ChallengeStatus | 'all'
-): Promise<Challenge[]> {
-  const supabase = getSupabaseBrowserClient()
+export async function fetchChallenges(status?: ChallengeStatus | 'all'): Promise<Challenge[]> {
+  const { supabase, userId } = await getAuthContext()
   let query = supabase.from('challenges').select('*').eq('user_id', userId)
 
   if (status && status !== 'all') {
@@ -39,23 +47,20 @@ export async function fetchChallenges(
   return (data ?? []).map(mapChallenge)
 }
 
-export async function fetchActiveChallenges(userId: string): Promise<Challenge[]> {
-  return fetchChallenges(userId, 'active')
+export async function fetchActiveChallenges(): Promise<Challenge[]> {
+  return fetchChallenges('active')
 }
 
 // ----- write -----
 
-export async function createChallenge(
-  userId: string,
-  input: {
-    habitId: string
-    name: string
-    tier: ChallengeTier
-    startDate: string
-    reason?: string
-  }
-): Promise<Challenge> {
-  const supabase = getSupabaseBrowserClient()
+export async function createChallenge(input: {
+  habitId: string
+  name: string
+  tier: ChallengeTier
+  startDate: string
+  reason?: string
+}): Promise<Challenge> {
+  const { supabase, userId } = await getAuthContext()
   const goalDays = CHALLENGE_TIER_DAYS[input.tier]
   const endDate = format(addDays(parseISO(input.startDate), goalDays - 1), 'yyyy-MM-dd')
 
@@ -81,10 +86,9 @@ export async function createChallenge(
 
 export async function updateChallengeStatus(
   challengeId: string,
-  userId: string,
   status: 'completed' | 'abandoned'
 ): Promise<void> {
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   const { error } = await supabase
     .from('challenges')
     .update({ status })
@@ -93,8 +97,8 @@ export async function updateChallengeStatus(
   if (error) throw new Error(error.message)
 }
 
-export async function abandonChallengesByHabit(habitId: string, userId: string): Promise<number> {
-  const supabase = getSupabaseBrowserClient()
+export async function abandonChallengesByHabit(habitId: string): Promise<number> {
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('challenges')
     .update({ status: 'abandoned' })
