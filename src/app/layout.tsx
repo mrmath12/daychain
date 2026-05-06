@@ -12,7 +12,17 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'Daychain',
-  description: 'Track your habits, build your chain.',
+  description: 'Construa seu protocolo diário',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Daychain',
+  },
+  formatDetection: { telephone: false },
+  icons: {
+    apple: '/icons/apple-touch-icon.png',
+  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,6 +30,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#09090b" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
