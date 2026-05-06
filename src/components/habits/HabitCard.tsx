@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { motion, useMotionValue, animate } from 'framer-motion'
 import { useDrag } from '@use-gesture/react'
+import { RefreshCw } from 'lucide-react'
 import { SWIPE_THRESHOLD_PERCENTAGE } from '@/lib/utils/constants'
 import type { Habit } from '@/types/domain'
 
@@ -90,8 +91,8 @@ export function HabitCard({
             )}
 
             {hasPendingSync && (
-              <span className="text-xs text-muted-foreground shrink-0" title="Sync pendente">
-                🔄
+              <span className="shrink-0 text-muted-foreground" title="Sync pendente">
+                <RefreshCw size={13} className="animate-spin" style={{ animationDuration: '2s' }} />
               </span>
             )}
 

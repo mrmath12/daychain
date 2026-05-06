@@ -5,9 +5,11 @@ import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addDays, format, parseISO } from 'date-fns'
+import { toast } from 'sonner'
 import { MAX_CHALLENGE_NAME_LENGTH, MAX_CHALLENGE_REASON_LENGTH } from '@/lib/utils/constants'
 import { TIER_CONFIG } from '@/lib/challenges/tierConfig'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
+import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { cn } from '@/lib/utils'
 import type { Habit, Challenge, ChallengeTier } from '@/types/domain'
 
@@ -61,6 +63,7 @@ export function ChallengeForm({
   onCancel,
 }: ChallengeFormProps) {
   const { t, language } = useAppTranslations()
+  const { isOnline } = useOnlineStatus()
   const [duplicateError, setDuplicateError] = useState<string | null>(null)
   const nameEditedRef = useRef(false)
   const todayStr = format(new Date(), 'yyyy-MM-dd')
@@ -112,6 +115,10 @@ export function ChallengeForm({
       : null
 
   async function handleFormSubmit(data: FormValues) {
+    if (!isOnline) {
+      toast.warning(t('offline.cannotCreateOffline'))
+      return
+    }
     setDuplicateError(null)
     // Client-side duplicate tier check
     const duplicate = activeChallenges.find(

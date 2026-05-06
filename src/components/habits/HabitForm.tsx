@@ -4,8 +4,10 @@ import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 import { MAX_HABIT_NAME_LENGTH } from '@/lib/utils/constants'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
+import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import type { Habit, DayOfWeek } from '@/types/domain'
 import { cn } from '@/lib/utils'
 
@@ -53,6 +55,7 @@ function errorMsg(
 
 export function HabitForm({ initialValues, onSubmit, onCancel }: HabitFormProps) {
   const { t } = useAppTranslations()
+  const { isOnline } = useOnlineStatus()
 
   const {
     register,
@@ -74,8 +77,16 @@ export function HabitForm({ initialValues, onSubmit, onCancel }: HabitFormProps)
     setFocus('name')
   }, [setFocus])
 
+  function handleFormSubmit(data: FormValues) {
+    if (!isOnline) {
+      toast.warning(t('offline.cannotCreateOffline'))
+      return
+    }
+    return onSubmit(data)
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 pb-6">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4 p-4 pb-6">
       {/* Name */}
       <div>
         <label className="block text-sm font-medium mb-1">{t('habits.nameLabel')}</label>
