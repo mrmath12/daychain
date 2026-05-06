@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Gemunu_Libre } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -8,7 +8,7 @@ import { DEFAULT_THEME, THEME_STORAGE_KEY } from '@/lib/utils/constants'
 import { AppShell } from '@/components/layout/AppShell'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const gemunuLibre = Gemunu_Libre({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'Daychain',
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${gemunuLibre.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme={DEFAULT_THEME}

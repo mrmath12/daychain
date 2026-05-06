@@ -42,3 +42,10 @@ export interface Challenge {
   status: ChallengeStatus
   createdAt: string
 }
+
+export interface Profile {
+  id: string
+  username: string
+  displayName: string | null
+  createdAt: string
+}
