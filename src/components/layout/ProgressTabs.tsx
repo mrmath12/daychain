@@ -11,7 +11,6 @@ const TABS = [
   { href: '/progress/week', labelKey: 'progress.week' },
   { href: '/progress/month', labelKey: 'progress.month' },
   { href: '/progress/year', labelKey: 'progress.year' },
-  { href: '/progress/stats', labelKey: 'progress.stats' },
 ] as const
 
 const slideVariants: Variants = {

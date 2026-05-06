@@ -66,3 +66,10 @@ next-env.d.ts
 # supabase
 /supabase/.branches
 /supabase/.temp
+
+# PWA generated files
+public/sw.js
+public/workbox-*.js
+public/sw.js.map
+public/workbox-*.js.map
+public/swe-worker-*.js

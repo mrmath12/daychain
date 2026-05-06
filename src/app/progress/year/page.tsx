@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { format } from 'date-fns'
 import { AnnualConsistencyTable } from '@/components/progress/AnnualConsistencyTable'
+import { HabitStatsSection } from '@/components/progress/HabitStatsSection'
 import { fetchAllHabits, fetchAnnualConsistency } from '@/lib/habits/queries'
 import { env } from '@/env'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
@@ -64,6 +66,9 @@ export default function YearPage() {
   }
 
   return (
-    <AnnualConsistencyTable habits={habits} countsByHabitYear={countsByHabitYear} years={years} />
+    <>
+      <AnnualConsistencyTable habits={habits} countsByHabitYear={countsByHabitYear} years={years} />
+      <HabitStatsSection userId={userId} referenceDate={format(new Date(), 'yyyy-MM-dd')} />
+    </>
   )
 }
