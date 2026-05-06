@@ -70,12 +70,7 @@ function GreetingHeader({ todayDate }: { todayDate: string }) {
             style={{ background: `linear-gradient(to right, ${cfg.accent}cc, transparent)` }}
           />
           {mounted && (
-            <span
-              className="text-[10px] tracking-[0.3em] uppercase select-none"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: cfg.accent }}
-            >
-              {cfg.symbol}
-            </span>
+            <span className="text-[10px] tracking-[0.3em] uppercase select-none">{cfg.symbol}</span>
           )}
         </motion.div>
 
@@ -83,7 +78,6 @@ function GreetingHeader({ todayDate }: { todayDate: string }) {
         <motion.h1
           variants={rise}
           className="text-[2rem] leading-[1.1] font-medium text-foreground"
-          style={{ fontFamily: "'Lora', Georgia, serif" }}
         >
           {t(`home.greeting.${greeting}`)}
         </motion.h1>
@@ -91,8 +85,7 @@ function GreetingHeader({ todayDate }: { todayDate: string }) {
         {/* Date */}
         <motion.p
           variants={rise}
-          className="mt-1.5 text-[11px] tracking-[0.12em] uppercase text-muted-foreground/60 capitalize"
-          style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          className="mt-1.5 text-[12px] tracking-[0.12em] uppercase text-muted-foreground/60 capitalize"
         >
           {formattedDate}
         </motion.p>
