@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
-import { env } from '@/env'
 import { Sheet } from '@/components/ui/sheet'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { ChallengeForm } from '@/components/challenges/ChallengeForm'
@@ -21,7 +20,6 @@ const TABS: TabKey[] = ['active', 'completed', 'abandoned', 'all']
 
 export default function ChallengesPage() {
   const { t } = useAppTranslations()
-  const userId = env.NEXT_PUBLIC_HARDCODED_USER_ID
   const { challenges, activeChallenges, isLoading, refresh } = useChallenges()
   const { habits } = useHabits()
 
@@ -39,7 +37,7 @@ export default function ChallengesPage() {
       return
     }
 
-    const map = await fetchAllChallengesProgress(activeChallenges, userId)
+    const map = await fetchAllChallengesProgress(activeChallenges)
     setProgressMap(map)
 
     const today = new Date()
@@ -48,7 +46,7 @@ export default function ChallengesPage() {
     )
 
     for (const c of toComplete) {
-      await updateChallengeStatus(c.id, userId, 'completed')
+      await updateChallengeStatus(c.id, 'completed')
       const cfg = TIER_CONFIG[c.tier]
       toast.success(`${cfg.emoji} '${c.name}' concluído! 🎉`)
     }
@@ -56,7 +54,7 @@ export default function ChallengesPage() {
     if (toComplete.length > 0) {
       await refresh()
     }
-  }, [activeChallenges, userId, refresh])
+  }, [activeChallenges, refresh])
 
   useEffect(() => {
     loadProgress()
@@ -84,7 +82,7 @@ export default function ChallengesPage() {
     startDate: string
     reason?: string | ''
   }) {
-    await createChallenge(userId, {
+    await createChallenge({
       habitId: data.habitId,
       name: data.name,
       tier: data.tier,
@@ -97,7 +95,7 @@ export default function ChallengesPage() {
 
   async function confirmAbandon() {
     if (!abandonTarget) return
-    await updateChallengeStatus(abandonTarget, userId, 'abandoned')
+    await updateChallengeStatus(abandonTarget, 'abandoned')
     setAbandonTarget(null)
     await refresh()
   }

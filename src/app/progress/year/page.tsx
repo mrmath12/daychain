@@ -5,13 +5,11 @@ import { format } from 'date-fns'
 import { AnnualConsistencyTable } from '@/components/progress/AnnualConsistencyTable'
 import { HabitStatsSection } from '@/components/progress/HabitStatsSection'
 import { fetchAllHabits, fetchAnnualConsistency } from '@/lib/habits/queries'
-import { env } from '@/env'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 import type { Habit } from '@/types/domain'
 
 export default function YearPage() {
   const { t } = useAppTranslations()
-  const userId = env.NEXT_PUBLIC_HARDCODED_USER_ID
 
   const [habits, setHabits] = useState<Habit[]>([])
   const [countsByHabitYear, setCountsByHabitYear] = useState<Map<string, number>>(new Map())
@@ -23,8 +21,8 @@ export default function YearPage() {
       setIsLoading(true)
       try {
         const [allHabits, annualData] = await Promise.all([
-          fetchAllHabits(userId),
-          fetchAnnualConsistency(userId),
+          fetchAllHabits(),
+          fetchAnnualConsistency(),
         ])
 
         const map = new Map<string, number>()
@@ -55,7 +53,7 @@ export default function YearPage() {
       }
     }
     load()
-  }, [userId])
+  }, [])
 
   if (isLoading) {
     return (
@@ -68,7 +66,7 @@ export default function YearPage() {
   return (
     <>
       <AnnualConsistencyTable habits={habits} countsByHabitYear={countsByHabitYear} years={years} />
-      <HabitStatsSection userId={userId} referenceDate={format(new Date(), 'yyyy-MM-dd')} />
+      <HabitStatsSection referenceDate={format(new Date(), 'yyyy-MM-dd')} />
     </>
   )
 }

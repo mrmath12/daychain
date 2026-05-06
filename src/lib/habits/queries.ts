@@ -5,6 +5,17 @@ import { calculateMaxChain } from '@/lib/habits/chain'
 
 type HabitUpdate = Database['public']['Tables']['habits']['Update']
 
+// ----- auth helper -----
+
+async function getAuthContext() {
+  const supabase = getSupabaseBrowserClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+  return { supabase, userId: user.id }
+}
+
 // ----- mappers -----
 
 function mapHabit(row: Record<string, unknown>): Habit {
@@ -32,8 +43,8 @@ function mapHabitLog(row: Record<string, unknown>): HabitLog {
 
 // ----- read -----
 
-export async function fetchActiveHabits(userId: string): Promise<Habit[]> {
-  const supabase = getSupabaseBrowserClient()
+export async function fetchActiveHabits(): Promise<Habit[]> {
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habits')
     .select('*')
@@ -47,8 +58,8 @@ export async function fetchActiveHabits(userId: string): Promise<Habit[]> {
 // backward-compat alias
 export const getActiveHabits = fetchActiveHabits
 
-export async function fetchAllHabits(userId: string): Promise<Habit[]> {
-  const supabase = getSupabaseBrowserClient()
+export async function fetchAllHabits(): Promise<Habit[]> {
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habits')
     .select('*')
@@ -61,12 +72,8 @@ export async function fetchAllHabits(userId: string): Promise<Habit[]> {
 // backward-compat alias
 export const getAllHabits = fetchAllHabits
 
-export async function getHabitLogs(
-  userId: string,
-  startDate: string,
-  endDate: string
-): Promise<HabitLog[]> {
-  const supabase = getSupabaseBrowserClient()
+export async function getHabitLogs(startDate: string, endDate: string): Promise<HabitLog[]> {
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('*')
@@ -87,8 +94,8 @@ export async function countHabitLogs(habitId: string): Promise<number> {
   return count ?? 0
 }
 
-export async function fetchHabitLogDates(habitId: string, userId: string): Promise<Set<string>> {
-  const supabase = getSupabaseBrowserClient()
+export async function fetchHabitLogDates(habitId: string): Promise<Set<string>> {
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('logged_date')
@@ -100,11 +107,10 @@ export async function fetchHabitLogDates(habitId: string, userId: string): Promi
 
 export async function fetchHabitLogsByPeriod(
   habitId: string,
-  userId: string,
   startDate: string,
   endDate: string
 ): Promise<HabitLog[]> {
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('*')
@@ -119,12 +125,11 @@ export async function fetchHabitLogsByPeriod(
 
 export async function fetchHabitLogsByHabitsAndPeriod(
   habitIds: string[],
-  userId: string,
   startDate: string,
   endDate: string
 ): Promise<Map<string, Set<string>>> {
   if (habitIds.length === 0) return new Map()
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('habit_id, logged_date')
@@ -146,10 +151,9 @@ export async function fetchHabitLogsByHabitsAndPeriod(
 // ----- write -----
 
 export async function createHabit(
-  userId: string,
   input: Pick<Habit, 'name' | 'emoji' | 'frequency'>
 ): Promise<Habit> {
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
 
   const { data: maxRow } = await supabase
     .from('habits')
@@ -179,10 +183,9 @@ export async function createHabit(
 
 export async function updateHabit(
   habitId: string,
-  userId: string,
   updates: Partial<Pick<Habit, 'name' | 'emoji' | 'frequency'>>
 ): Promise<Habit> {
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
 
   const dbUpdates: HabitUpdate = {}
   if (updates.name !== undefined) dbUpdates.name = updates.name.trim()
@@ -201,8 +204,8 @@ export async function updateHabit(
   return mapHabit(data as Record<string, unknown>)
 }
 
-export async function archiveHabit(habitId: string, userId: string): Promise<void> {
-  const supabase = getSupabaseBrowserClient()
+export async function archiveHabit(habitId: string): Promise<void> {
+  const { supabase, userId } = await getAuthContext()
   const { error } = await supabase
     .from('habits')
     .update({ archived_at: new Date().toISOString() })
@@ -211,8 +214,8 @@ export async function archiveHabit(habitId: string, userId: string): Promise<voi
   if (error) throw new Error(error.message)
 }
 
-export async function deleteHabit(habitId: string, userId: string): Promise<void> {
-  const supabase = getSupabaseBrowserClient()
+export async function deleteHabit(habitId: string): Promise<void> {
+  const { supabase, userId } = await getAuthContext()
   const { error } = await supabase
     .from('habits')
     .delete()
@@ -223,10 +226,9 @@ export async function deleteHabit(habitId: string, userId: string): Promise<void
 }
 
 export async function reorderHabits(
-  updates: Array<{ id: string; sortOrder: number }>,
-  userId: string
+  updates: Array<{ id: string; sortOrder: number }>
 ): Promise<void> {
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   await Promise.all(
     updates.map(({ id, sortOrder }) =>
       supabase
@@ -245,11 +247,10 @@ export async function reorderHabits(
 // Uses UPSERT to mark and DELETE to unmark. logged_date must always be the device's LOCAL date.
 export async function toggleHabitCheck(
   habitId: string,
-  userId: string,
   loggedDate: string, // "YYYY-MM-DD" — local date
   value: boolean // true = mark done, false = unmark
 ): Promise<void> {
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   if (value) {
     const { error } = await supabase
       .from('habit_logs')
@@ -270,12 +271,9 @@ export async function toggleHabitCheck(
 }
 
 // Fetches all logs for multiple habits (no date filter). Returns Map<habitId, Set<loggedDate>>.
-export async function fetchAllHabitLogDates(
-  habitIds: string[],
-  userId: string
-): Promise<Map<string, Set<string>>> {
+export async function fetchAllHabitLogDates(habitIds: string[]): Promise<Map<string, Set<string>>> {
   if (habitIds.length === 0) return new Map()
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('habit_id, logged_date')
@@ -293,10 +291,10 @@ export async function fetchAllHabitLogDates(
 }
 
 // Fetches check counts grouped by habit and year for the annual view.
-export async function fetchAnnualConsistency(
-  userId: string
-): Promise<Array<{ habitId: string; year: number; totalChecks: number }>> {
-  const supabase = getSupabaseBrowserClient()
+export async function fetchAnnualConsistency(): Promise<
+  Array<{ habitId: string; year: number; totalChecks: number }>
+> {
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('habit_id, logged_date')
@@ -323,11 +321,10 @@ export async function fetchAnnualConsistency(
 // Calculates the maximum chain for a habit within a specific calendar year.
 export async function fetchMaxChainForYear(
   habitId: string,
-  userId: string,
   year: number,
   frequency: DayOfWeek[]
 ): Promise<number> {
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('logged_date')
@@ -346,11 +343,10 @@ export async function fetchMaxChainForYear(
 // Fetches today's checks for a list of habit_ids. Returns a Set of habit_ids done today.
 export async function fetchTodayChecks(
   habitIds: string[],
-  userId: string,
   todayDate: string
 ): Promise<Set<string>> {
   if (habitIds.length === 0) return new Set()
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   const { data, error } = await supabase
     .from('habit_logs')
     .select('habit_id')

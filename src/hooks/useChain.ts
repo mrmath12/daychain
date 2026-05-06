@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from 'react'
 import type { Habit } from '@/types/domain'
 import { calculateChainWithShields, calculateMaxChain } from '@/lib/habits/chain'
 import { fetchHabitLogDates } from '@/lib/habits/queries'
-import { env } from '@/env'
 
 interface ChainData {
   currentChain: number
@@ -14,13 +13,12 @@ interface ChainData {
 
 export function useChain(habit: Habit): ChainData {
   const [loggedDates, setLoggedDates] = useState<Set<string>>(new Set())
-  const userId = env.NEXT_PUBLIC_HARDCODED_USER_ID
 
   useEffect(() => {
-    fetchHabitLogDates(habit.id, userId)
+    fetchHabitLogDates(habit.id)
       .then(setLoggedDates)
       .catch(() => setLoggedDates(new Set()))
-  }, [habit.id, userId])
+  }, [habit.id])
 
   return useMemo(() => {
     const today = new Date()

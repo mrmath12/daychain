@@ -162,7 +162,6 @@ interface HabitDashboardProps {
   initialChallenges: Challenge[]
   challengeProgresses: Record<string, number>
   todayDate: string // "YYYY-MM-DD" local date
-  userId: string
 }
 
 export function HabitDashboard({
@@ -174,11 +173,10 @@ export function HabitDashboard({
   initialChallenges,
   challengeProgresses,
   todayDate,
-  userId,
 }: HabitDashboardProps) {
   const { t } = useAppTranslations()
   const { isOnline } = useOnlineStatus()
-  const { enqueueCheck, pendingHabitIds } = useSyncQueue(userId)
+  const { enqueueCheck, pendingHabitIds } = useSyncQueue()
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set(initialChecks))
   const [challenges, setChallenges] = useState<Challenge[]>(initialChallenges)
   const [showOther, setShowOther] = useState(false)
@@ -213,7 +211,7 @@ export function HabitDashboard({
       }
 
       try {
-        await toggleHabitCheck(habitId, userId, todayDate, value)
+        await toggleHabitCheck(habitId, todayDate, value)
       } catch {
         // Reverter optimistic update em caso de erro no servidor
         setCheckedIds((prev) => {
@@ -225,7 +223,7 @@ export function HabitDashboard({
         toast.error(t('common.error'))
       }
     },
-    [isOnline, enqueueCheck, todayDate, userId, t]
+    [isOnline, enqueueCheck, todayDate, t]
   )
 
   const handleAbandonChallenge = useCallback(

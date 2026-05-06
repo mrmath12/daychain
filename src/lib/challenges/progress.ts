@@ -4,12 +4,20 @@ import { parseLocalDate } from '@/lib/utils/date'
 import { updateChallengeStatus } from '@/lib/challenges/queries'
 import type { Challenge } from '@/types/domain'
 
-// Returns COUNT of habit_logs within challenge period, capped at today.
-export async function calculateChallengeProgress(
-  challenge: Challenge,
-  userId: string
-): Promise<number> {
+// ----- auth helper -----
+
+async function getAuthContext() {
   const supabase = getSupabaseBrowserClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+  return { supabase, userId: user.id }
+}
+
+// Returns COUNT of habit_logs within challenge period, capped at today.
+export async function calculateChallengeProgress(challenge: Challenge): Promise<number> {
+  const { supabase, userId } = await getAuthContext()
   const today = format(new Date(), 'yyyy-MM-dd')
   const effectiveEnd = challenge.endDate < today ? challenge.endDate : today
 
@@ -26,13 +34,10 @@ export async function calculateChallengeProgress(
 }
 
 // Returns true if the challenge was just completed (progress >= goal_days).
-export async function checkAndCompleteChallengeIfDone(
-  challenge: Challenge,
-  userId: string
-): Promise<boolean> {
-  const progress = await calculateChallengeProgress(challenge, userId)
+export async function checkAndCompleteChallengeIfDone(challenge: Challenge): Promise<boolean> {
+  const progress = await calculateChallengeProgress(challenge)
   if (progress >= challenge.goalDays) {
-    await updateChallengeStatus(challenge.id, userId, 'completed')
+    await updateChallengeStatus(challenge.id, 'completed')
     return true
   }
   return false
@@ -54,12 +59,11 @@ export function calculateDaysRemaining(challenge: Challenge, today: Date): numbe
 
 // Batch progress query — one Supabase call for all active challenges.
 export async function fetchAllChallengesProgress(
-  challenges: Challenge[],
-  userId: string
+  challenges: Challenge[]
 ): Promise<Map<string, number>> {
   if (challenges.length === 0) return new Map()
 
-  const supabase = getSupabaseBrowserClient()
+  const { supabase, userId } = await getAuthContext()
   const today = format(new Date(), 'yyyy-MM-dd')
 
   const habitIds = Array.from(new Set(challenges.map((c) => c.habitId)))
