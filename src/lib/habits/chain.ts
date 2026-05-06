@@ -1,14 +1,14 @@
-import { addDays, differenceInDays, format, isAfter, parseISO, subDays } from 'date-fns'
-import { MAX_STREAK_LOOKBACK_DAYS } from '@/lib/utils/constants'
+import { addDays, differenceInDays, format, isAfter, isBefore, parseISO, subDays } from 'date-fns'
+import { MAX_CHAIN_LOOKBACK_DAYS, MAX_SHIELDS } from '@/lib/utils/constants'
 import { getISODayOfWeek } from '@/lib/utils/date'
 import type { DayOfWeek } from '@/types/domain'
 
 /**
- * Calcula o streak atual de um hábito.
+ * Calcula a chain atual de um hábito.
  * Conta de ontem para trás, parando no primeiro dia esperado sem check.
  * "Hoje" não conta — ainda pode ser marcado.
  */
-export function calculateCurrentStreak(
+export function calculateCurrentChain(
   frequency: DayOfWeek[],
   loggedDates: Set<string>,
   today: Date
@@ -16,28 +16,28 @@ export function calculateCurrentStreak(
   if (frequency.length === 0) return 0
 
   let cursor = subDays(today, 1)
-  let streak = 0
+  let chain = 0
 
   while (true) {
     const dow = getISODayOfWeek(cursor)
     if (frequency.includes(dow as DayOfWeek)) {
       if (loggedDates.has(format(cursor, 'yyyy-MM-dd'))) {
-        streak++
+        chain++
       } else {
         break
       }
     }
     cursor = subDays(cursor, 1)
-    if (differenceInDays(today, cursor) > MAX_STREAK_LOOKBACK_DAYS) break
+    if (differenceInDays(today, cursor) > MAX_CHAIN_LOOKBACK_DAYS) break
   }
-  return streak
+  return chain
 }
 
 /**
- * Calcula o streak máximo histórico de um hábito.
+ * Calcula a chain máxima histórica de um hábito.
  * Varre todos os dias desde a criação do hábito até hoje.
  */
-export function calculateMaxStreak(
+export function calculateMaxChain(
   frequency: DayOfWeek[],
   loggedDates: Set<string>,
   habitCreatedAt: Date,
@@ -115,16 +115,64 @@ export function calcularProgressoDesafio(
   return count
 }
 
-// Backward-compat aliases (Portuguese names used in existing call sites)
-export function calcularStreakAtual(frequency: number[], logs: Set<string>, hoje: Date): number {
-  return calculateCurrentStreak(frequency as DayOfWeek[], logs, hoje)
+/**
+ * Calcula chain atual e escudos disponíveis com scan para frente no tempo.
+ * Escudos (máx MAX_SHIELDS) são ganhos em dias fora da frequency e consumidos
+ * ao proteger dias esperados perdidos. "Hoje" não é avaliado.
+ */
+export function calculateChainWithShields(
+  frequency: DayOfWeek[],
+  loggedDates: Set<string>,
+  today: Date
+): { chain: number; shields: number } {
+  if (frequency.length === 0) return { chain: 0, shields: 0 }
+
+  let chain = 0
+  let shields = 0
+  let chainRunning = false
+
+  let cursor = subDays(today, MAX_CHAIN_LOOKBACK_DAYS)
+
+  while (isBefore(cursor, today)) {
+    const dow = getISODayOfWeek(cursor)
+    const dateStr = format(cursor, 'yyyy-MM-dd')
+
+    if (frequency.includes(dow as DayOfWeek)) {
+      if (loggedDates.has(dateStr)) {
+        // Shields accumulated during a broken chain don't carry into a new one
+        if (!chainRunning) shields = 0
+        chain++
+        chainRunning = true
+      } else if (shields > 0) {
+        shields--
+        chain++
+        chainRunning = true
+      } else {
+        if (chainRunning) chain = 0
+        chainRunning = false
+      }
+    } else {
+      if (loggedDates.has(dateStr)) {
+        shields = Math.min(shields + 1, MAX_SHIELDS)
+      }
+    }
+
+    cursor = addDays(cursor, 1)
+  }
+
+  return { chain, shields }
 }
 
-export function calcularStreakMaximo(
+// Backward-compat aliases (Portuguese names used in existing call sites)
+export function calcularChainAtual(frequency: number[], logs: Set<string>, hoje: Date): number {
+  return calculateCurrentChain(frequency as DayOfWeek[], logs, hoje)
+}
+
+export function calcularChainMaximo(
   frequency: number[],
   logs: Set<string>,
   createdAt: Date,
   hoje: Date
 ): number {
-  return calculateMaxStreak(frequency as DayOfWeek[], logs, createdAt, hoje)
+  return calculateMaxChain(frequency as DayOfWeek[], logs, createdAt, hoje)
 }

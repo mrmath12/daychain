@@ -72,7 +72,7 @@
     "stats": "Stats",
     "total": "Total",
     "yearColumn": "Year",
-    "streakMax": "Max streak",
+    "chainMax": "Max chain",
     "noChecks": "No check-ins recorded yet",
     "prevWeek": "Previous week",
     "nextWeek": "Next week",
@@ -80,8 +80,8 @@
     "nextMonth": "Next month"
   },
   "stats": {
-    "currentStreak": "Current streak",
-    "maxStreak": "Max streak",
+    "currentChain": "Current chain",
+    "maxChain": "Max chain",
     "totalChecks": "Total check-ins",
     "monthConsistency": "Month consistency",
     "yearConsistency": "Year consistency",

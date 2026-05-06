@@ -10,7 +10,8 @@ import type { Habit } from '@/types/domain'
 interface HabitCardProps {
   habit: Habit
   isDone: boolean
-  currentStreak: number
+  currentChain: number
+  shields: number
   onMarkDone: () => void
   onMarkUndone: () => void
   hasPendingSync?: boolean
@@ -19,7 +20,8 @@ interface HabitCardProps {
 export function HabitCard({
   habit,
   isDone,
-  currentStreak,
+  currentChain,
+  shields,
   onMarkDone,
   onMarkUndone,
   hasPendingSync = false,
@@ -84,9 +86,15 @@ export function HabitCard({
               {habit.name}
             </span>
 
-            {currentStreak > 0 && (
-              <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-500 shrink-0">
-                🔥 {currentStreak}
+            {currentChain > 0 && (
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-gray-500/10 px-2 py-0.5 text-xs font-medium text-white-500 shrink-0">
+                🔗 {currentChain}
+              </span>
+            )}
+
+            {shields > 0 && (
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400 shrink-0">
+                🛡️ {shields}
               </span>
             )}
 

@@ -1,10 +1,11 @@
 import { subDays, format } from 'date-fns'
-import { MAX_STREAK_LOOKBACK_DAYS } from '@/lib/utils/constants'
+import { MAX_CHAIN_LOOKBACK_DAYS } from '@/lib/utils/constants'
 import {
-  calculateCurrentStreak,
-  calculateMaxStreak,
+  calculateCurrentChain,
+  calculateMaxChain,
   calculateConsistencyPercentage,
-} from '../streak'
+  calculateChainWithShields,
+} from '../chain'
 import type { DayOfWeek } from '@/types/domain'
 
 // All days of the week
@@ -17,14 +18,14 @@ function dateSet(...dates: string[]): Set<string> {
 }
 
 // ---------------------------------------------------------------------------
-// calculateCurrentStreak
+// calculateCurrentChain
 // ---------------------------------------------------------------------------
 
-describe('calculateCurrentStreak', () => {
+describe('calculateCurrentChain', () => {
   // PRD table case 1 — daily, 5 consecutive days, today = Saturday
   // Today = Saturday Apr 5 2025 (ISO day 6)
   // Logs: Mon Mar 31 … Fri Apr 4 (5 days)
-  test('hábito diário com 5 checks consecutivos retorna streak 5', () => {
+  test('hábito diário com 5 checks consecutivos retorna chain 5', () => {
     const today = new Date(2025, 3, 5) // Apr 5, 2025 (Sat)
     const logs = dateSet(
       '2025-04-04', // Fri
@@ -33,7 +34,7 @@ describe('calculateCurrentStreak', () => {
       '2025-04-01', // Tue
       '2025-03-31' // Mon
     )
-    expect(calculateCurrentStreak(ALL_DAYS, logs, today)).toBe(5)
+    expect(calculateCurrentChain(ALL_DAYS, logs, today)).toBe(5)
   })
 
   // PRD table case 2 — daily, today not marked, yesterday and day before done
@@ -41,10 +42,10 @@ describe('calculateCurrentStreak', () => {
   test('hoje não marcado, ontem e anteontem feitos retorna 2', () => {
     const today = new Date(2025, 3, 5) // Apr 5, 2025 (Sat)
     const logs = dateSet('2025-04-04', '2025-04-03')
-    expect(calculateCurrentStreak(ALL_DAYS, logs, today)).toBe(2)
+    expect(calculateCurrentChain(ALL_DAYS, logs, today)).toBe(2)
   })
 
-  // PRD table case 3 — Mon/Wed/Fri, 2 complete weeks (6 occurrences), streak = 6
+  // PRD table case 3 — Mon/Wed/Fri, 2 complete weeks (6 occurrences), chain = 6
   // Today = Apr 28 2025 (Mon)
   // Last 2 weeks: Apr 14 (Mon), Apr 16 (Wed), Apr 18 (Fri) + Apr 21 (Mon), Apr 23 (Wed), Apr 25 (Fri)
   test('academia seg/qua/sex — 2 semanas completas retorna 6', () => {
@@ -57,10 +58,10 @@ describe('calculateCurrentStreak', () => {
       '2025-04-16', // Wed
       '2025-04-14' // Mon
     )
-    expect(calculateCurrentStreak(MWF, logs, today)).toBe(6)
+    expect(calculateCurrentChain(MWF, logs, today)).toBe(6)
   })
 
-  // PRD table case 4 — Mon/Wed/Fri, did Mon and Wed but NOT Fri → streak = 0
+  // PRD table case 4 — Mon/Wed/Fri, did Mon and Wed but NOT Fri → chain = 0
   // Today = Apr 28 (Mon); last Fri (Apr 25) not done
   test('academia seg/qua/sex — fez seg e qua mas não sex retorna 0', () => {
     const today = new Date(2025, 3, 28) // Apr 28, 2025 (Mon)
@@ -68,40 +69,40 @@ describe('calculateCurrentStreak', () => {
       '2025-04-23', // Wed
       '2025-04-21' // Mon — Fri Apr 25 intentionally missing
     )
-    expect(calculateCurrentStreak(MWF, logs, today)).toBe(0)
+    expect(calculateCurrentChain(MWF, logs, today)).toBe(0)
   })
 
-  // PRD table case 5 — Mon/Wed/Fri, today = Tue, did Mon yesterday → streak = 1
+  // PRD table case 5 — Mon/Wed/Fri, today = Tue, did Mon yesterday → chain = 1
   // Today = Apr 29 2025 (Tue); Mon Apr 28 logged
   test('academia seg/qua/sex — hoje=ter, fez seg ontem retorna 1', () => {
     const today = new Date(2025, 3, 29) // Apr 29, 2025 (Tue)
     const logs = dateSet('2025-04-28') // Mon
-    expect(calculateCurrentStreak(MWF, logs, today)).toBe(1)
+    expect(calculateCurrentChain(MWF, logs, today)).toBe(1)
   })
 
   // PRD table case 6 — habit created today, no checks → 0
   test('hábito criado hoje sem checks retorna 0', () => {
     const today = new Date(2025, 3, 28) // Apr 28, 2025 (Mon)
-    expect(calculateCurrentStreak(ALL_DAYS, dateSet(), today)).toBe(0)
+    expect(calculateCurrentChain(ALL_DAYS, dateSet(), today)).toBe(0)
   })
 
   // Edge: empty frequency always returns 0
   test('frequency vazia retorna 0', () => {
     const today = new Date(2025, 3, 28)
     const logs = dateSet('2025-04-27', '2025-04-26', '2025-04-25')
-    expect(calculateCurrentStreak([], logs, today)).toBe(0)
+    expect(calculateCurrentChain([], logs, today)).toBe(0)
   })
 
   // Edge: empty log set returns 0
   test('loggedDates vazio retorna 0', () => {
     const today = new Date(2025, 3, 28)
-    expect(calculateCurrentStreak(MWF, dateSet(), today)).toBe(0)
+    expect(calculateCurrentChain(MWF, dateSet(), today)).toBe(0)
   })
 
-  // Edge: non-expected days between expected days do NOT break the streak
+  // Edge: non-expected days between expected days do NOT break the chain
   // Today = Tue Apr 29; freq = Mon/Wed/Fri; logs include Mon Apr 28 + Fri Apr 25 + Wed Apr 23
   // The Sat/Sun/Tue between them must be silently skipped
-  test('streak não quebra por dia não esperado entre dias esperados', () => {
+  test('chain não quebra por dia não esperado entre dias esperados', () => {
     const today = new Date(2025, 3, 29) // Tue Apr 29
     const logs = dateSet(
       '2025-04-28', // Mon
@@ -109,7 +110,7 @@ describe('calculateCurrentStreak', () => {
       '2025-04-23', // Wed
       '2025-04-21' // Mon
     )
-    expect(calculateCurrentStreak(MWF, logs, today)).toBe(4)
+    expect(calculateCurrentChain(MWF, logs, today)).toBe(4)
   })
 
   // Edge: weekly habit (Sunday only) — 3 consecutive Sundays
@@ -117,12 +118,12 @@ describe('calculateCurrentStreak', () => {
   test('hábito semanal (só domingo) — fez últimos 3 domingos retorna 3', () => {
     const today = new Date(2025, 3, 28) // Mon Apr 28
     const logs = dateSet('2025-04-27', '2025-04-20', '2025-04-13')
-    expect(calculateCurrentStreak([7], logs, today)).toBe(3)
+    expect(calculateCurrentChain([7], logs, today)).toBe(3)
   })
 
   // Edge: today's log is in loggedDates but today is not an expected day
-  // Today = Tue Apr 29; freq = MWF; today logged (Tue, not expected) — must not affect streak
-  test('check hoje mas hoje não é dia esperado retorna streak correto sem contar hoje', () => {
+  // Today = Tue Apr 29; freq = MWF; today logged (Tue, not expected) — must not affect chain
+  test('check hoje mas hoje não é dia esperado retorna chain correto sem contar hoje', () => {
     const today = new Date(2025, 3, 29) // Tue Apr 29
     const logs = dateSet(
       '2025-04-29', // Tue — today, NOT expected, should be ignored
@@ -131,31 +132,31 @@ describe('calculateCurrentStreak', () => {
       '2025-04-23' // Wed ✓
     )
     // Starts from Apr 28 (Mon) backwards: Mon✓, (Sun/Sat skip), Fri✓, (Thu skip), Wed✓, (Tue skip), Mon Apr 21 missing → break
-    expect(calculateCurrentStreak(MWF, logs, today)).toBe(3)
+    expect(calculateCurrentChain(MWF, logs, today)).toBe(3)
   })
 
-  // Edge: lookback hard-cap at MAX_STREAK_LOOKBACK_DAYS
-  // Create logs for 731 consecutive days before today — result must be exactly MAX_STREAK_LOOKBACK_DAYS
-  test('streak máximo de lookback não ultrapassa MAX_STREAK_LOOKBACK_DAYS', () => {
+  // Edge: lookback hard-cap at MAX_CHAIN_LOOKBACK_DAYS
+  // Create logs for 731 consecutive days before today — result must be exactly MAX_CHAIN_LOOKBACK_DAYS
+  test('chain máximo de lookback não ultrapassa MAX_CHAIN_LOOKBACK_DAYS', () => {
     const today = new Date(2025, 3, 28) // Apr 28, 2025
     const logs = new Set<string>()
-    for (let i = 1; i <= MAX_STREAK_LOOKBACK_DAYS + 1; i++) {
+    for (let i = 1; i <= MAX_CHAIN_LOOKBACK_DAYS + 1; i++) {
       logs.add(format(subDays(today, i), 'yyyy-MM-dd'))
     }
-    expect(calculateCurrentStreak(ALL_DAYS, logs, today)).toBe(MAX_STREAK_LOOKBACK_DAYS)
+    expect(calculateCurrentChain(ALL_DAYS, logs, today)).toBe(MAX_CHAIN_LOOKBACK_DAYS)
   })
 })
 
 // ---------------------------------------------------------------------------
-// calculateMaxStreak
+// calculateMaxChain
 // ---------------------------------------------------------------------------
 
-describe('calculateMaxStreak', () => {
+describe('calculateMaxChain', () => {
   // No checks → max = 0
   test('retorna 0 para hábito sem checks', () => {
     const createdAt = new Date(2025, 0, 1) // Jan 1, 2025
     const today = new Date(2025, 3, 28) // Apr 28, 2025
-    expect(calculateMaxStreak(ALL_DAYS, dateSet(), createdAt, today)).toBe(0)
+    expect(calculateMaxChain(ALL_DAYS, dateSet(), createdAt, today)).toBe(0)
   })
 
   // Sequence of 10 broken, then sequence of 5 → max = 10
@@ -182,7 +183,7 @@ describe('calculateMaxStreak', () => {
       '2025-01-24',
       '2025-01-25'
     )
-    expect(calculateMaxStreak(ALL_DAYS, logs, createdAt, today)).toBe(10)
+    expect(calculateMaxChain(ALL_DAYS, logs, createdAt, today)).toBe(10)
   })
 
   // Multiple sequences — return the largest one
@@ -209,7 +210,7 @@ describe('calculateMaxStreak', () => {
       '2025-01-21',
       '2025-01-22'
     )
-    expect(calculateMaxStreak(ALL_DAYS, logs, createdAt, today)).toBe(7)
+    expect(calculateMaxChain(ALL_DAYS, logs, createdAt, today)).toBe(7)
   })
 
   // Daily habit never broken — max equals total days since creation (inclusive)
@@ -218,7 +219,7 @@ describe('calculateMaxStreak', () => {
     const createdAt = new Date(2025, 3, 23) // Apr 23, 2025 (Wed)
     const today = new Date(2025, 3, 27) // Apr 27, 2025 (Sun)
     const logs = dateSet('2025-04-23', '2025-04-24', '2025-04-25', '2025-04-26', '2025-04-27')
-    expect(calculateMaxStreak(ALL_DAYS, logs, createdAt, today)).toBe(5)
+    expect(calculateMaxChain(ALL_DAYS, logs, createdAt, today)).toBe(5)
   })
 
   // Mon/Wed/Fri — all 10 expected days done across 4 weeks; non-expected days must be skipped
@@ -238,7 +239,7 @@ describe('calculateMaxStreak', () => {
       '2025-04-25', // Fri
       '2025-04-28' // Mon
     )
-    expect(calculateMaxStreak(MWF, logs, createdAt, today)).toBe(10)
+    expect(calculateMaxChain(MWF, logs, createdAt, today)).toBe(10)
   })
 
   // frequency vazia retorna 0
@@ -246,11 +247,11 @@ describe('calculateMaxStreak', () => {
     const createdAt = new Date(2025, 0, 1)
     const today = new Date(2025, 3, 28)
     const logs = dateSet('2025-01-01', '2025-01-02')
-    expect(calculateMaxStreak([], logs, createdAt, today)).toBe(0)
+    expect(calculateMaxChain([], logs, createdAt, today)).toBe(0)
   })
 
-  // Streak máximo = 10; streak atual = 3 → max still 10 (current break doesn't erase history)
-  test('quebra no streak atual não altera streak máximo histórico', () => {
+  // Chain máxima = 10; chain atual = 3 → max still 10 (current break doesn't erase history)
+  test('quebra na chain atual não altera chain máxima histórica', () => {
     const createdAt = new Date(2025, 0, 1) // Jan 1
     const today = new Date(2025, 3, 28) // Apr 28
     // 10 days in Jan, then a gap, then only 3 recent days
@@ -267,9 +268,9 @@ describe('calculateMaxStreak', () => {
       '2025-01-10',
       // gap
       '2025-04-26',
-      '2025-04-27' // only 2 recent (current streak = 2 as of Apr 28)
+      '2025-04-27' // only 2 recent (current chain = 2 as of Apr 28)
     )
-    expect(calculateMaxStreak(ALL_DAYS, logs, createdAt, today)).toBe(10)
+    expect(calculateMaxChain(ALL_DAYS, logs, createdAt, today)).toBe(10)
   })
 })
 
@@ -369,5 +370,94 @@ describe('calculateConsistencyPercentage', () => {
     )
     // 4 Sundays expected, 2 logged → floor(50) = 50
     expect(calculateConsistencyPercentage([7], logs, start, end)).toBe(50)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// calculateChainWithShields
+// ---------------------------------------------------------------------------
+
+describe('calculateChainWithShields', () => {
+  // Cenário base: sem extras, sem escudos — comportamento idêntico à chain normal
+  test('sem dias extras, sem faltas → chain normal, shields=0', () => {
+    // freq=ter/qui, fez ter e qui, hoje=sex
+    const today = new Date(2025, 3, 25) // Sex Apr 25
+    const logs = dateSet('2025-04-24', '2025-04-22') // qui e ter
+    const r = calculateChainWithShields([2, 4], logs, today)
+    expect(r.chain).toBe(2)
+    expect(r.shields).toBe(0)
+  })
+
+  // Cenário principal: extra na qua protege qui faltada
+  test('check em dia extra antes de dia faltado protege a ofensiva', () => {
+    // freq=ter/qui, fez ter(22) + qua extra(23) + qui(24) faltou, hoje=sex(25)
+    const today = new Date(2025, 3, 25) // Sex Apr 25
+    const logs = dateSet('2025-04-22', '2025-04-23') // ter + qua(extra)
+    // quinta (24) não foi feita — deve ser protegida pelo escudo da qua
+    const r = calculateChainWithShields([2, 4], logs, today)
+    expect(r.chain).toBe(2)
+    expect(r.shields).toBe(0)
+  })
+
+  // Escudo NÃO protege retroativamente: extra vem DEPOIS da falta
+  test('check extra DEPOIS do dia faltado não protege a ofensiva', () => {
+    // freq=ter/qui, ter(22) faltou, qua extra(23) feito, qui(24) feito, hoje=sex(25)
+    const today = new Date(2025, 3, 25) // Sex Apr 25
+    const logs = dateSet('2025-04-23', '2025-04-24') // qua(extra) + qui
+    // ter(22) faltou sem escudo disponível → chain quebra, recomeça do qui
+    const r = calculateChainWithShields([2, 4], logs, today)
+    expect(r.chain).toBe(1) // só qui conta na chain atual
+    expect(r.shields).toBe(0) // escudos acumulados durante pausa são descartados ao reiniciar chain
+  })
+
+  // Múltiplos escudos acumulados
+  test('múltiplos dias extras acumulam escudos até o limite MAX_SHIELDS', () => {
+    // freq=[7] (só domingo), fez extras seg/ter/qua/qui/sex/sab (6 extras) → máx 5 escudos
+    const today = new Date(2025, 3, 27) // Dom Apr 27 (hoje, não conta)
+    const logs = dateSet(
+      '2025-04-21', // seg extra
+      '2025-04-22', // ter extra
+      '2025-04-23', // qua extra
+      '2025-04-24', // qui extra
+      '2025-04-25', // sex extra
+      '2025-04-26' // sab extra (6° extra, mas cap=5)
+    )
+    const r = calculateChainWithShields([7], logs, today)
+    expect(r.shields).toBe(5) // capped at MAX_SHIELDS
+    expect(r.chain).toBe(0) // dom passado (Apr 20) não foi feito → chain 0 (5 escudos preservados)
+  })
+
+  // Escudos sobrevivem à quebra da chain
+  test('escudos não resetam quando chain quebra', () => {
+    // freq=ter/qui; extra na seg(21); ter(22) faltou SEM escudo disponível (seg vem antes, mas é extra);
+    // espera: ter(22) faltou — na hora do scan, seg(21) já foi processado → shield=1
+    // ter(22) é freq, faltou → consome shield → chain=1
+    // qui(24) feito → chain=2; hoje=sex(25)
+    const today = new Date(2025, 3, 25) // Sex Apr 25
+    const logs = dateSet(
+      '2025-04-21', // seg extra → +1 shield
+      // ter(22) faltado → shield consumido
+      '2025-04-24' // qui feito
+    )
+    const r = calculateChainWithShields([2, 4], logs, today)
+    expect(r.chain).toBe(2)
+    expect(r.shields).toBe(0)
+  })
+
+  // frequency vazia → 0/0
+  test('frequency vazia retorna chain 0 e shields 0', () => {
+    const today = new Date(2025, 3, 25)
+    const logs = dateSet('2025-04-24', '2025-04-23')
+    const r = calculateChainWithShields([], logs, today)
+    expect(r.chain).toBe(0)
+    expect(r.shields).toBe(0)
+  })
+
+  // Sem logs → 0/0
+  test('sem logs retorna chain 0 e shields 0', () => {
+    const today = new Date(2025, 3, 25)
+    const r = calculateChainWithShields([2, 4], new Set(), today)
+    expect(r.chain).toBe(0)
+    expect(r.shields).toBe(0)
   })
 })

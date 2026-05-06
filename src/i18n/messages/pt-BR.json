@@ -72,7 +72,7 @@
     "stats": "Stats",
     "total": "Total",
     "yearColumn": "Ano",
-    "streakMax": "Streak máx.",
+    "chainMax": "Chain máx.",
     "noChecks": "Nenhum check registrado ainda",
     "prevWeek": "Semana anterior",
     "nextWeek": "Próxima semana",
@@ -80,8 +80,8 @@
     "nextMonth": "Próximo mês"
   },
   "stats": {
-    "currentStreak": "Streak atual",
-    "maxStreak": "Streak máximo",
+    "currentChain": "Chain atual",
+    "maxChain": "Chain máximo",
     "totalChecks": "Total de checks",
     "monthConsistency": "Consistência no mês",
     "yearConsistency": "Consistência no ano",

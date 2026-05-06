@@ -1,7 +1,7 @@
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import type { Habit, DayOfWeek, HabitLog } from '@/types/domain'
 import type { Database } from '@/types/database'
-import { calculateMaxStreak } from '@/lib/habits/streak'
+import { calculateMaxChain } from '@/lib/habits/chain'
 
 type HabitUpdate = Database['public']['Tables']['habits']['Update']
 
@@ -320,8 +320,8 @@ export async function fetchAnnualConsistency(
   })
 }
 
-// Calculates the maximum streak for a habit within a specific calendar year.
-export async function fetchMaxStreakForYear(
+// Calculates the maximum chain for a habit within a specific calendar year.
+export async function fetchMaxChainForYear(
   habitId: string,
   userId: string,
   year: number,
@@ -340,7 +340,7 @@ export async function fetchMaxStreakForYear(
   const logs = new Set((data ?? []).map((row) => row.logged_date as string))
   const yearStart = new Date(year, 0, 1, 12, 0, 0)
   const yearEnd = new Date(year, 11, 31, 12, 0, 0)
-  return calculateMaxStreak(frequency, logs, yearStart, yearEnd)
+  return calculateMaxChain(frequency, logs, yearStart, yearEnd)
 }
 
 // Fetches today's checks for a list of habit_ids. Returns a Set of habit_ids done today.

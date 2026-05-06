@@ -137,7 +137,9 @@ export function WeeklyGrid({
                       <WeekGridCell
                         state={state}
                         isLoading={isLoadingCell.has(cellKey)}
-                        onToggle={() => onToggleCheck(habit.id, dayStr, state === 'done')}
+                        onToggle={() =>
+                          onToggleCheck(habit.id, dayStr, state === 'done' || state === 'off-done')
+                        }
                       />
                     </td>
                   )
