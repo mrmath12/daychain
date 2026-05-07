@@ -14,6 +14,7 @@ const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans' })
 export const metadata: Metadata = {
   title: 'Daychain',
   description: 'Construa seu protocolo diário',
+  metadataBase: new URL('https://daychain.vercel.app'),
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -27,6 +28,27 @@ export const metadata: Metadata = {
       { url: '/favicon.ico', type: 'image/x-icon' },
     ],
     apple: '/icons/apple-touch-icon.png',
+  },
+  openGraph: {
+    type: 'website',
+    url: 'https://daychain.vercel.app',
+    title: 'Daychain',
+    description: 'Construa seu protocolo diário',
+    siteName: 'Daychain',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Daychain — Construa seu protocolo diário',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Daychain',
+    description: 'Construa seu protocolo diário',
+    images: ['/og-image.png'],
   },
 }
 
