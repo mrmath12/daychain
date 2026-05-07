@@ -34,7 +34,7 @@ export function StatsCard({
         {/* Primary: current chain — prominent when active, absent when zero */}
         {currentChain > 0 && (
           <div className="pb-4 border-b border-border/60 flex items-baseline gap-2">
-            <span className="text-3xl font-mono font-bold tabular-nums leading-none text-amber-500 dark:text-amber-400">
+            <span className="text-3xl font-mono font-bold tabular-nums leading-none text-dark-teal-3 dark:text-lime-yellow">
               {currentChain}
             </span>
             <span className="text-xs text-muted-foreground font-mono">

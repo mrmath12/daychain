@@ -28,9 +28,9 @@ const TIER_ICONS: Record<ChallengeTier, string> = {
 // ----- greeting header -----
 
 const TIME_CONFIG = {
-  morning: { accent: '#f59e0b', symbol: '○' },
-  afternoon: { accent: '#38bdf8', symbol: '◑' },
-  evening: { accent: '#818cf8', symbol: '●' },
+  morning: { accent: '#d6ff0a', symbol: '○' },
+  afternoon: { accent: '#00627a', symbol: '◑' },
+  evening: { accent: '#005266', symbol: '●' },
 } as const
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.09 } } }
@@ -275,7 +275,7 @@ export function HabitDashboard({
           >
             <span>{showOther ? '▾' : '▸'}</span>
             <span>{t('home.otherHabits')}</span>
-            <span className="text-blue-400">🛡️</span>
+            <span className="text-dark-teal-4 dark:text-azure-mist">🛡️</span>
             <span className="text-muted-foreground/50">({initialOtherHabits.length})</span>
           </button>
 

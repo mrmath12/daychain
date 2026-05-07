@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 
@@ -15,36 +16,22 @@ export default async function LandingPage() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-border/40">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0"
-            style={{ background: '#f59e0b' }}
-            aria-hidden="true"
-          >
-            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-              <rect
-                x="0.75"
-                y="0.75"
-                width="4.5"
-                height="8.5"
-                rx="2.25"
-                stroke="white"
-                strokeWidth="1.5"
-              />
-              <rect
-                x="8.75"
-                y="0.75"
-                width="4.5"
-                height="8.5"
-                rx="2.25"
-                stroke="white"
-                strokeWidth="1.5"
-              />
-              <line x1="5.25" y1="5" x2="8.75" y2="5" stroke="white" strokeWidth="1.5" />
-            </svg>
-          </div>
-          <span className="font-bold tracking-wide text-lg text-foreground">Daychain</span>
-        </div>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo/daychain-logo-full-dark.svg"
+            alt="Daychain"
+            width={105}
+            height={28}
+            className="block dark:hidden"
+          />
+          <Image
+            src="/logo/daychain-logo-full-light.svg"
+            alt="Daychain"
+            width={105}
+            height={28}
+            className="hidden dark:block"
+          />
+        </Link>
         <nav className="flex items-center gap-3">
           <Link
             href="/auth/login"
@@ -71,7 +58,7 @@ export default async function LandingPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/auth/register"
-              className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold bg-amber-500 hover:bg-amber-400 text-black rounded-xl transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold bg-lime-yellow hover:bg-lime-yellow-2 text-ink-black rounded-xl transition-colors"
             >
               {t('landing.ctaPrimary')}
             </Link>
@@ -139,7 +126,20 @@ export default async function LandingPage() {
       <footer className="border-t border-border/40 px-6 py-8">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="font-semibold text-foreground">Daychain</p>
+            <Image
+              src="/logo/daychain-logo-full-dark.svg"
+              alt="Daychain"
+              width={80}
+              height={21}
+              className="block dark:hidden mb-1"
+            />
+            <Image
+              src="/logo/daychain-logo-full-light.svg"
+              alt="Daychain"
+              width={80}
+              height={21}
+              className="hidden dark:block mb-1"
+            />
             <p className="text-sm text-muted-foreground">{t('landing.footerTagline')}</p>
           </div>
           <nav className="flex gap-4 text-sm text-muted-foreground">

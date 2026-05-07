@@ -38,7 +38,7 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
             'repeating-linear-gradient(-45deg, transparent, transparent 3px, hsl(var(--muted)) 3px, hsl(var(--muted)) 4px)',
         }}
       >
-        <div className="absolute inset-0 bg-blue-500/0 group-hover/off:bg-blue-500/15 transition-colors duration-150" />
+        <div className="absolute inset-0 bg-dark-teal-4/0 group-hover/off:bg-dark-teal-4/15 transition-colors duration-150" />
       </button>
     )
   }
@@ -50,13 +50,13 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
         aria-label="Desmarcar dia extra"
         onClick={onToggle}
         disabled={isLoading}
-        className={`${base} bg-blue-400/20 dark:bg-blue-500/20 transition-all ${
+        className={`${base} bg-dark-teal-4/20 dark:bg-dark-teal-3/20 transition-all ${
           isLoading
             ? 'opacity-50'
-            : 'hover:bg-blue-300/30 dark:hover:bg-blue-400/30 active:scale-95'
+            : 'hover:bg-dark-teal-4/30 dark:hover:bg-dark-teal-3/30 active:scale-95'
         }`}
       >
-        <Check className="h-[18px] w-[18px] text-blue-500 dark:text-blue-400" strokeWidth={3} />
+        <Check className="h-[18px] w-[18px] text-ink-black" strokeWidth={3} />
       </button>
     )
   }
@@ -76,11 +76,13 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
         aria-label="Desmarcar"
         onClick={onToggle}
         disabled={isLoading}
-        className={`${base} bg-amber-400 dark:bg-amber-500 transition-all ${
-          isLoading ? 'opacity-50' : 'hover:bg-amber-300 dark:hover:bg-amber-400 active:scale-95'
+        className={`${base} bg-lime-yellow dark:bg-lime-yellow transition-all ${
+          isLoading
+            ? 'opacity-50'
+            : 'hover:bg-lime-yellow-2 dark:hover:bg-lime-yellow-2 active:scale-95'
         }`}
       >
-        <Check className="h-[18px] w-[18px] text-white" strokeWidth={3} />
+        <Check className="h-[18px] w-[18px] text-ink-black" strokeWidth={3} />
       </button>
     )
   }
@@ -93,10 +95,12 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
         onClick={onToggle}
         disabled={isLoading}
         className={`${base} transition-all ${
-          isLoading ? 'opacity-50' : 'hover:bg-amber-50 dark:hover:bg-amber-950/20 active:scale-95'
+          isLoading
+            ? 'opacity-50'
+            : 'hover:bg-azure-mist dark:hover:bg-dark-teal-2/40 active:scale-95'
         }`}
       >
-        <div className="h-5 w-5 border-2 border-zinc-300 dark:border-zinc-600 transition-colors group-hover:border-amber-400" />
+        <div className="h-5 w-5 border-2 border-zinc-300 dark:border-zinc-600 transition-colors group-hover:border-lime-yellow" />
       </button>
     )
   }
@@ -104,8 +108,8 @@ export function WeekGridCell({ state, isLoading = false, onToggle }: Props) {
   if (state === 'archived-done') {
     return (
       <div className={`${base} cursor-default opacity-25`} aria-hidden="true">
-        <div className="h-5 w-5 bg-amber-400 dark:bg-amber-500 flex items-center justify-center">
-          <Check className="h-3 w-3 text-white" strokeWidth={3} />
+        <div className="h-5 w-5 bg-lime-yellow flex items-center justify-center">
+          <Check className="h-3 w-3 text-ink-black" strokeWidth={3} />
         </div>
       </div>
     )

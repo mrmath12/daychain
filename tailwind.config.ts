@@ -18,6 +18,14 @@ const config: Config = {
         sans: ['var(--font-sans)', 'sans-serif'],
       },
       colors: {
+        'ink-black': '#00181e',
+        'dark-teal': '#00313d',
+        'dark-teal-2': '#004152',
+        'dark-teal-3': '#005266',
+        'dark-teal-4': '#00627a',
+        'azure-mist': '#ebfbff',
+        'lime-yellow': '#d6ff0a',
+        'lime-yellow-2': '#c7ef00',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

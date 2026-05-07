@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, BarChart2, Trophy, Settings } from 'lucide-react'
@@ -37,13 +38,6 @@ export function Sidebar() {
           font-family: var(--font-dm-sans), sans-serif;
         }
 
-        .sidebar-logo {
-          font-family: var(--font-bebas), sans-serif;
-          letter-spacing: 0.18em;
-          font-size: 1.45rem;
-          line-height: 1;
-        }
-
         .sidebar-nav-item {
           position: relative;
           display: flex;
@@ -68,7 +62,7 @@ export function Sidebar() {
           transform: translateY(-50%);
           width: 3px;
           height: 0;
-          background: #f59e0b;
+          background: #d6ff0a;
           border-radius: 0 3px 3px 0;
           transition: height 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -88,7 +82,7 @@ export function Sidebar() {
         }
 
         .sidebar-nav-item.active .sidebar-nav-icon {
-          color: #f59e0b;
+          color: #d6ff0a;
         }
 
         .sidebar-chain-connector {
@@ -130,35 +124,21 @@ export function Sidebar() {
       >
         <div className="flex flex-1 flex-col overflow-y-auto">
           {/* Logo */}
-          <div className="flex h-16 items-center px-5 border-b gap-3">
-            <div
-              className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0"
-              style={{ background: '#f59e0b' }}
-              aria-hidden="true"
-            >
-              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                <rect
-                  x="0.75"
-                  y="0.75"
-                  width="4.5"
-                  height="8.5"
-                  rx="2.25"
-                  stroke="white"
-                  strokeWidth="1.5"
-                />
-                <rect
-                  x="8.75"
-                  y="0.75"
-                  width="4.5"
-                  height="8.5"
-                  rx="2.25"
-                  stroke="white"
-                  strokeWidth="1.5"
-                />
-                <line x1="5.25" y1="5" x2="8.75" y2="5" stroke="white" strokeWidth="1.5" />
-              </svg>
-            </div>
-            <span className="sidebar-logo text-foreground">Daychain</span>
+          <div className="flex h-16 items-center px-5 border-b">
+            <Image
+              src="/logo/daychain-logo-full-dark.svg"
+              alt="Daychain"
+              width={105}
+              height={28}
+              className="block dark:hidden"
+            />
+            <Image
+              src="/logo/daychain-logo-full-light.svg"
+              alt="Daychain"
+              width={105}
+              height={28}
+              className="hidden dark:block"
+            />
           </div>
 
           {/* Nav */}
