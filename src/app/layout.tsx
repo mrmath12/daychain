@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
   icons: {
     icon: [
-      { url: '/logo/daychain-logo-icon-dark.svg', media: '(prefers-color-scheme: light)' },
-      { url: '/logo/daychain-logo-icon-light.svg', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon/daychain.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', type: 'image/x-icon' },
     ],
     apple: '/icons/apple-touch-icon.png',
   },
