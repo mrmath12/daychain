@@ -43,7 +43,6 @@ export default function SettingsPage() {
     <div className="px-4 pt-6 pb-24 max-w-lg mx-auto space-y-8">
       <h1 className="text-2xl font-semibold tracking-tight">{t('settings.title')}</h1>
 
-      {/* Account group */}
       {user && (
         <section className="space-y-2">
           <p className="px-1 text-[11px] font-medium uppercase tracking-widest text-muted-foreground/60">
@@ -69,7 +68,6 @@ export default function SettingsPage() {
         </section>
       )}
 
-      {/* Habits group */}
       <section className="space-y-2">
         <p className="px-1 text-[11px] font-medium uppercase tracking-widest text-muted-foreground/60">
           {t('habits.title')}
@@ -90,7 +88,6 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      {/* Appearance group */}
       <section className="space-y-2">
         <p className="px-1 text-[11px] font-medium uppercase tracking-widest text-muted-foreground/60">
           {t('settings.appearance')}

@@ -1,6 +1,5 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { BottomNav } from './BottomNav'
 import { Sidebar } from './Sidebar'
 
@@ -9,13 +8,6 @@ interface AppShellProps {
 }
 
 export function AppShell({ children }: AppShellProps) {
-  const pathname = usePathname()
-  const isAuthRoute = pathname?.startsWith('/auth')
-
-  if (isAuthRoute) {
-    return <div className="min-h-screen bg-background">{children}</div>
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />

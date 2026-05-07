@@ -146,6 +146,23 @@
     "language": "Idioma",
     "languageDesc": "Altere o idioma da interface."
   },
+  "landing": {
+    "heroTitle": "Construa seus hábitos. Um dia de cada vez.",
+    "heroSubtitle": "Rastreie hábitos com swipe, mantenha sua corrente e acompanhe seu progresso real ao longo do tempo.",
+    "ctaPrimary": "Começar agora — é grátis",
+    "ctaSecondary": "Entrar",
+    "featuresTitle": "Tudo que você precisa",
+    "feature1Title": "Marque em segundos",
+    "feature1Desc": "Swipe gesture para marcar hábitos. Rápido como reflexo.",
+    "feature2Title": "Nunca quebre a corrente",
+    "feature2Desc": "Acompanhe sequências por frequência configurada.",
+    "feature3Title": "Desafie a si mesmo",
+    "feature3Desc": "7 tiers de desafios vinculados a cada hábito.",
+    "feature4Title": "Veja onde você está",
+    "feature4Desc": "4 visões de progresso: semana, mês, anual e stats.",
+    "screenshotsTitle": "Veja o app em ação",
+    "footerTagline": "Construa seu protocolo diário."
+  },
   "offline": {
     "cannotCreateOffline": "Sem conexão. Crie hábitos quando online."
   },

@@ -6,7 +6,7 @@ import { Home, BarChart2, Trophy, Settings } from 'lucide-react'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 
 const NAV_ITEMS = [
-  { href: '/', icon: Home, labelKey: 'nav.home', matchPrefix: undefined },
+  { href: '/home', icon: Home, labelKey: 'nav.home', matchPrefix: '/home' },
   { href: '/progress/week', icon: BarChart2, labelKey: 'nav.progress', matchPrefix: '/progress' },
   { href: '/challenges', icon: Trophy, labelKey: 'nav.challenges', matchPrefix: undefined },
   { href: '/settings', icon: Settings, labelKey: 'nav.settings', matchPrefix: undefined },
@@ -17,7 +17,6 @@ export function BottomNav() {
   const { t } = useAppTranslations()
 
   function isActive(href: string, matchPrefix?: string) {
-    if (href === '/') return pathname === '/'
     return pathname.startsWith(matchPrefix ?? href)
   }
 

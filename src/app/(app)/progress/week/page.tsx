@@ -75,7 +75,6 @@ function WeekPageContent() {
     const cellKey = `${habitId}:${date}`
     setIsLoadingCell((prev) => new Set(prev).add(cellKey))
 
-    // Optimistic update
     setLogsByHabit((prev) => {
       const next = new Map(prev)
       const set = new Set(next.get(habitId) ?? [])
@@ -88,7 +87,6 @@ function WeekPageContent() {
     try {
       await toggleHabitCheck(habitId, date, !currentValue)
     } catch {
-      // Revert on failure
       setLogsByHabit((prev) => {
         const next = new Map(prev)
         const set = new Set(next.get(habitId) ?? [])

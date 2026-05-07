@@ -26,11 +26,10 @@ export default function ChallengesPage() {
   const [tab, setTab] = useState<TabKey>('active')
   const [sheetOpen, setSheetOpen] = useState(false)
   const [progressMap, setProgressMap] = useState<Map<string, number>>(new Map())
-  const [abandonTarget, setAbandonTarget] = useState<string | null>(null) // challengeId
+  const [abandonTarget, setAbandonTarget] = useState<string | null>(null)
 
   const activeHabits = habits.filter((h) => !h.archivedAt)
 
-  // Load progress in batch + auto-complete finished challenges
   const loadProgress = useCallback(async () => {
     if (activeChallenges.length === 0) {
       setProgressMap(new Map())
@@ -61,7 +60,6 @@ export default function ChallengesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChallenges.length])
 
-  // Filtered + sorted challenges for the active tab
   const displayedChallenges = (() => {
     const filtered =
       tab === 'all' ? challenges : challenges.filter((c) => c.status === (tab as ChallengeStatus))
@@ -104,7 +102,6 @@ export default function ChallengesPage() {
 
   return (
     <div className="max-w-lg mx-auto">
-      {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <h1 className="text-xl font-semibold">{t('challenges.title')}</h1>
         <button
@@ -115,7 +112,6 @@ export default function ChallengesPage() {
         </button>
       </div>
 
-      {/* Tabs */}
       <div className="flex border-b px-4 gap-1">
         {TABS.map((tabKey) => (
           <button
@@ -133,7 +129,6 @@ export default function ChallengesPage() {
         ))}
       </div>
 
-      {/* Content */}
       <div className="p-4 space-y-3">
         {isLoading && (
           <p className="text-sm text-muted-foreground text-center py-8">{t('common.loading')}</p>
@@ -160,7 +155,6 @@ export default function ChallengesPage() {
         })}
       </div>
 
-      {/* New challenge sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen} title={t('challenges.new')}>
         <ChallengeForm
           activeHabits={activeHabits}
@@ -170,7 +164,6 @@ export default function ChallengesPage() {
         />
       </Sheet>
 
-      {/* Abandon confirm */}
       <ConfirmDialog
         open={abandonTarget !== null}
         title={t('challenges.abandonConfirm', { name: abandonChallenge?.name ?? '' })}
