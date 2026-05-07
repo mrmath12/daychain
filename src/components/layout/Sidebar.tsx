@@ -7,7 +7,7 @@ import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 const NAV_ITEMS = [
-  { href: '/', icon: Home, labelKey: 'nav.home', matchPrefix: undefined },
+  { href: '/home', icon: Home, labelKey: 'nav.home', matchPrefix: '/home' },
   { href: '/progress/week', icon: BarChart2, labelKey: 'nav.progress', matchPrefix: '/progress' },
   { href: '/challenges', icon: Trophy, labelKey: 'nav.challenges', matchPrefix: undefined },
   { href: '/settings', icon: Settings, labelKey: 'nav.settings', matchPrefix: undefined },
@@ -18,7 +18,6 @@ export function Sidebar() {
   const { t } = useAppTranslations()
 
   function isActive(href: string, matchPrefix?: string) {
-    if (href === '/') return pathname === '/'
     return pathname.startsWith(matchPrefix ?? href)
   }
 

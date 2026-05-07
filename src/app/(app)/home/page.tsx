@@ -42,7 +42,6 @@ export default async function HomePage() {
   const todayDate = getTodayLocalDate()
   const lookbackDate = format(subDays(today, 730), 'yyyy-MM-dd')
 
-  // 1. Active habits
   const { data: habitsData } = await supabase
     .from('habits')
     .select('*')
@@ -56,7 +55,6 @@ export default async function HomePage() {
   const habitsOther = allHabits.filter((h) => !habitIdsForTodaySet.has(h.id))
   const allHabitIds = allHabits.map((h) => h.id)
 
-  // 2. Active challenges (max 3 for dashboard)
   const { data: challengesData } = await supabase
     .from('challenges')
     .select('*')
@@ -68,7 +66,6 @@ export default async function HomePage() {
   const challenges: Challenge[] = (challengesData ?? []).map(mapChallenge)
   const challengeHabitIds = challenges.map((c) => c.habitId)
 
-  // 3. Logs for all habits + challenges (single query)
   const allRelevantIds = Array.from(new Set([...allHabitIds, ...challengeHabitIds]))
 
   let rawLogs: Array<{ habit_id: string; logged_date: string }> = []
@@ -82,7 +79,6 @@ export default async function HomePage() {
     rawLogs = (data ?? []) as Array<{ habit_id: string; logged_date: string }>
   }
 
-  // Group logs by habit_id
   const logsByHabit = new Map<string, Set<string>>()
   for (const row of rawLogs) {
     const set = logsByHabit.get(row.habit_id) ?? new Set<string>()
@@ -90,12 +86,10 @@ export default async function HomePage() {
     logsByHabit.set(row.habit_id, set)
   }
 
-  // 4. Today's checks — all habits (off-day habits may also be checked today)
   const todayChecks: string[] = allHabitIds.filter((id) =>
     (logsByHabit.get(id) ?? new Set()).has(todayDate)
   )
 
-  // 5. Chain and shields for all habits
   const chains: Record<string, number> = {}
   const shieldsMap: Record<string, number> = {}
   for (const habit of allHabits) {
@@ -105,7 +99,6 @@ export default async function HomePage() {
     shieldsMap[habit.id] = shields
   }
 
-  // 6. Challenge progress from the same log set
   const challengeProgresses: Record<string, number> = {}
   for (const challenge of challenges) {
     const logs = logsByHabit.get(challenge.habitId) ?? new Set<string>()

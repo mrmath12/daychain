@@ -111,7 +111,6 @@ function MonthPageContent() {
 
   const isCurrentMonth = monthId === currentMonthId
 
-  // "Abril 2025" / "April 2025"
   const monthName = new Intl.DateTimeFormat(language, { month: 'long' }).format(firstDay)
   const monthLabel = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}`
 

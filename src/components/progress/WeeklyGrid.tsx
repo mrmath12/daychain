@@ -103,11 +103,11 @@ export function WeeklyGrid({
           } as React.CSSProperties
         }
       >
-        <table className="border-collapse text-sm" style={{ minWidth: 'max-content' }}>
+        <table className="border-collapse text-sm w-full" style={{ minWidth: 'max-content' }}>
           <thead>
             <tr>
               <th
-                className="sticky left-0 z-10 bg-background px-2 py-2 text-left min-w-[88px] lg:min-w-[148px]"
+                className="sticky left-0 z-10 bg-background px-2 py-2 text-left min-w-[88px] w-[88px] lg:min-w-[148px] lg:w-[148px]"
                 style={{
                   borderBottom: '2px solid hsl(var(--border))',
                   borderRight: '1px solid hsl(var(--border))',
@@ -148,11 +148,11 @@ export function WeeklyGrid({
               const logs = logsByHabit.get(habit.id) ?? new Set<string>()
               return (
                 <tr key={habit.id} className="group">
-                  <td className="sticky left-0 z-10 bg-background border-b border-r border-border px-2 py-0 group-hover:bg-muted/40 transition-colors min-w-[88px] lg:min-w-[148px]">
+                  <td className="sticky left-0 z-10 bg-background border-b border-r border-border px-2 py-0 group-hover:bg-muted/40 transition-colors min-w-[88px] w-[88px] lg:min-w-[148px] lg:w-[148px]">
                     <div className="flex items-center gap-1.5 min-h-[54px]">
                       <span className="shrink-0 text-base leading-none">{habit.emoji}</span>
                       <span
-                        className={`truncate text-xs leading-tight font-medium max-w-[56px] lg:max-w-[112px] ${
+                        className={`truncate text-xs leading-tight font-medium max-w-[56px] lg:max-w-[120px] ${
                           isArchived ? 'text-muted-foreground/50 line-through' : ''
                         }`}
                         title={habit.name}
@@ -194,7 +194,7 @@ export function WeeklyGrid({
           <tfoot>
             <tr>
               <td
-                className="sticky left-0 z-10 bg-background border-r border-border px-2 py-2 text-[10px] font-mono font-semibold uppercase tracking-widest text-muted-foreground min-w-[88px] lg:min-w-[148px]"
+                className="sticky left-0 z-10 bg-background border-r border-border px-2 py-2 text-[10px] font-mono font-semibold uppercase tracking-widest text-muted-foreground min-w-[88px] w-[88px] lg:min-w-[148px] lg:w-[148px]"
                 style={{ borderTop: '2px solid hsl(var(--border))' }}
               >
                 {t('progress.total')}

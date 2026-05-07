@@ -32,7 +32,6 @@ export default function YearPage() {
           yearSet.add(year)
         }
 
-        // Current year always present even with 0 checks
         yearSet.add(new Date().getFullYear())
 
         const sortedYears = Array.from(yearSet).sort((a, b) => b - a)
