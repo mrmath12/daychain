@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, BarChart2, Trophy, Settings } from 'lucide-react'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
+import { useAppStore } from '@/store/appStore'
 import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
-const NAV_ITEMS = [
+const STATIC_NAV_ITEMS = [
   { href: '/home', icon: Home, labelKey: 'nav.home', matchPrefix: '/home' },
-  { href: '/progress/week', icon: BarChart2, labelKey: 'nav.progress', matchPrefix: '/progress' },
   { href: '/challenges', icon: Trophy, labelKey: 'nav.challenges', matchPrefix: undefined },
   { href: '/settings', icon: Settings, labelKey: 'nav.settings', matchPrefix: undefined },
 ]
@@ -16,6 +16,13 @@ const NAV_ITEMS = [
 export function Sidebar() {
   const pathname = usePathname()
   const { t } = useAppTranslations()
+  const lastProgressTab = useAppStore((s) => s.lastProgressTab)
+
+  const NAV_ITEMS = [
+    STATIC_NAV_ITEMS[0],
+    { href: lastProgressTab, icon: BarChart2, labelKey: 'nav.progress', matchPrefix: '/progress' },
+    ...STATIC_NAV_ITEMS.slice(1),
+  ]
 
   function isActive(href: string, matchPrefix?: string) {
     return pathname.startsWith(matchPrefix ?? href)
@@ -26,14 +33,12 @@ export function Sidebar() {
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500&display=swap');
-
         .sidebar-root {
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-dm-sans), sans-serif;
         }
 
         .sidebar-logo {
-          font-family: 'Bebas Neue', sans-serif;
+          font-family: var(--font-bebas), sans-serif;
           letter-spacing: 0.18em;
           font-size: 1.45rem;
           line-height: 1;

@@ -60,37 +60,31 @@ function GreetingHeader({ todayDate }: { todayDate: string }) {
   const cfg = TIME_CONFIG[greeting]
 
   return (
-    <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap');`}</style>
-      <motion.div variants={stagger} initial="hidden" animate="show" className="relative">
-        {/* Ambient accent row */}
-        <motion.div variants={rise} className="mb-3 flex items-center gap-2.5">
-          <div
-            className="h-px w-20 rounded-full"
-            style={{ background: `linear-gradient(to right, ${cfg.accent}cc, transparent)` }}
-          />
-          {mounted && (
-            <span className="text-[10px] tracking-[0.3em] uppercase select-none">{cfg.symbol}</span>
-          )}
-        </motion.div>
-
-        {/* Greeting */}
-        <motion.h1
-          variants={rise}
-          className="text-[2rem] leading-[1.1] font-medium text-foreground"
-        >
-          {t(`home.greeting.${greeting}`)}
-        </motion.h1>
-
-        {/* Date */}
-        <motion.p
-          variants={rise}
-          className="mt-1.5 text-[12px] tracking-[0.12em] uppercase text-muted-foreground/60 capitalize"
-        >
-          {formattedDate}
-        </motion.p>
+    <motion.div variants={stagger} initial="hidden" animate="show" className="relative">
+      {/* Ambient accent row */}
+      <motion.div variants={rise} className="mb-3 flex items-center gap-2.5">
+        <div
+          className="h-px w-20 rounded-full"
+          style={{ background: `linear-gradient(to right, ${cfg.accent}cc, transparent)` }}
+        />
+        {mounted && (
+          <span className="text-[10px] tracking-[0.3em] uppercase select-none">{cfg.symbol}</span>
+        )}
       </motion.div>
-    </>
+
+      {/* Greeting */}
+      <motion.h1 variants={rise} className="text-[2rem] leading-[1.1] font-medium text-foreground">
+        {t(`home.greeting.${greeting}`)}
+      </motion.h1>
+
+      {/* Date */}
+      <motion.p
+        variants={rise}
+        className="mt-1.5 text-[12px] tracking-[0.12em] uppercase text-muted-foreground/60 capitalize"
+      >
+        {formattedDate}
+      </motion.p>
+    </motion.div>
   )
 }
 
