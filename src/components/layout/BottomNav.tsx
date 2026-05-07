@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, BarChart2, Trophy, Settings } from 'lucide-react'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
+import { useAppStore } from '@/store/appStore'
 
-const NAV_ITEMS = [
+const STATIC_NAV_ITEMS = [
   { href: '/home', icon: Home, labelKey: 'nav.home', matchPrefix: '/home' },
-  { href: '/progress/week', icon: BarChart2, labelKey: 'nav.progress', matchPrefix: '/progress' },
   { href: '/challenges', icon: Trophy, labelKey: 'nav.challenges', matchPrefix: undefined },
   { href: '/settings', icon: Settings, labelKey: 'nav.settings', matchPrefix: undefined },
 ]
@@ -15,6 +15,13 @@ const NAV_ITEMS = [
 export function BottomNav() {
   const pathname = usePathname()
   const { t } = useAppTranslations()
+  const lastProgressTab = useAppStore((s) => s.lastProgressTab)
+
+  const NAV_ITEMS = [
+    STATIC_NAV_ITEMS[0],
+    { href: lastProgressTab, icon: BarChart2, labelKey: 'nav.progress', matchPrefix: '/progress' },
+    ...STATIC_NAV_ITEMS.slice(1),
+  ]
 
   function isActive(href: string, matchPrefix?: string) {
     return pathname.startsWith(matchPrefix ?? href)
