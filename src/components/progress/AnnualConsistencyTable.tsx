@@ -109,7 +109,7 @@ export function AnnualConsistencyTable({ habits, countsByHabitYear, years }: Pro
                 >
                   <span
                     className={`text-sm font-mono font-semibold tabular-nums ${
-                      isCurrentYear ? 'text-amber-600 dark:text-amber-400' : ''
+                      isCurrentYear ? 'text-dark-teal-3 dark:text-lime-yellow' : ''
                     }`}
                   >
                     {year}
@@ -137,7 +137,9 @@ export function AnnualConsistencyTable({ habits, countsByHabitYear, years }: Pro
                 <td className="sticky right-0 z-10 bg-background border-b border-l border-border px-3 py-2.5 text-center">
                   <span
                     className={`text-sm font-mono font-bold tabular-nums ${
-                      isCurrentYear ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground'
+                      isCurrentYear
+                        ? 'text-dark-teal-3 dark:text-lime-yellow'
+                        : 'text-muted-foreground'
                     }`}
                   >
                     {yearTotal}

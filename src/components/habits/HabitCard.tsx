@@ -65,7 +65,7 @@ export function HabitCard({
         <div
           className={`absolute inset-0 rounded-lg transition-colors duration-75 ${
             swipeHint === 'right'
-              ? 'bg-green-500/20'
+              ? 'bg-lime-yellow/20'
               : swipeHint === 'left'
                 ? 'bg-muted/40'
                 : 'bg-transparent'
@@ -95,7 +95,7 @@ export function HabitCard({
             )}
 
             {shields > 0 && (
-              <span className="inline-flex items-center gap-0.5 rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-400 shrink-0">
+              <span className="inline-flex items-center gap-0.5 rounded-full bg-dark-teal-4/10 px-2 py-0.5 text-xs font-medium text-dark-teal-4 dark:text-azure-mist shrink-0">
                 🛡️ {shields}
               </span>
             )}
@@ -111,8 +111,8 @@ export function HabitCard({
               onClick={isDone ? onMarkUndone : onMarkDone}
               className={`h-7 w-7 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
                 isDone
-                  ? 'border-green-500 bg-green-500 text-white'
-                  : 'border-muted-foreground hover:border-green-500'
+                  ? 'border-lime-yellow bg-lime-yellow text-ink-black'
+                  : 'border-muted-foreground hover:border-lime-yellow'
               }`}
               aria-label={
                 isDone

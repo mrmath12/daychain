@@ -5,10 +5,10 @@ import { Moon, Sun } from 'lucide-react'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const { t } = useAppTranslations()
 
-  const isDark = theme === 'dark'
+  const isDark = resolvedTheme === 'dark'
 
   return (
     <div
@@ -37,7 +37,7 @@ export function ThemeToggle() {
         <Moon
           size={13}
           aria-hidden="true"
-          className={`transition-all duration-300 ${isDark ? 'text-amber-500 scale-110' : 'scale-100'}`}
+          className={`transition-all duration-300 ${isDark ? 'text-lime-yellow scale-110' : 'scale-100'}`}
         />
         {t('settings.themeDark')}
       </button>
@@ -53,7 +53,7 @@ export function ThemeToggle() {
         <Sun
           size={13}
           aria-hidden="true"
-          className={`transition-all duration-300 ${!isDark ? 'text-amber-500 scale-110' : 'scale-100'}`}
+          className={`transition-all duration-300 ${!isDark ? 'text-lime-yellow scale-110' : 'scale-100'}`}
         />
         {t('settings.themeLight')}
       </button>

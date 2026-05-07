@@ -118,13 +118,13 @@ export function MonthlyGrid({
                   <th
                     key={dayStr}
                     className={`px-0 py-2 text-center font-normal min-w-[36px] ${
-                      isCurrentDay ? 'bg-amber-50 dark:bg-amber-950/30' : ''
+                      isCurrentDay ? 'bg-azure-mist dark:bg-dark-teal-2/40' : ''
                     }`}
                     style={{ borderBottom: '2px solid hsl(var(--border))' }}
                   >
                     <span
                       className={`text-xs font-mono font-bold ${
-                        isCurrentDay ? 'text-amber-600 dark:text-amber-400' : ''
+                        isCurrentDay ? 'text-dark-teal-3 dark:text-lime-yellow' : ''
                       }`}
                     >
                       {format(day, 'd')}
@@ -176,7 +176,7 @@ export function MonthlyGrid({
                       <td
                         key={dayStr}
                         className={`border-b border-border p-0 min-w-[36px] ${
-                          isCurrentDay ? 'bg-amber-50 dark:bg-amber-950/30' : ''
+                          isCurrentDay ? 'bg-azure-mist dark:bg-dark-teal-2/40' : ''
                         }`}
                       >
                         <WeekGridCell
@@ -220,14 +220,14 @@ export function MonthlyGrid({
                   <td
                     key={dayStr}
                     className={`px-0 py-2 text-center min-w-[36px] ${
-                      isCurrentDay ? 'bg-amber-50 dark:bg-amber-950/30' : ''
+                      isCurrentDay ? 'bg-azure-mist dark:bg-dark-teal-2/40' : ''
                     }`}
                     style={{ borderTop: '2px solid hsl(var(--border))' }}
                   >
                     <span
                       className={`text-xs font-mono tabular-nums ${
                         done > 0
-                          ? 'text-amber-600 dark:text-amber-400 font-bold'
+                          ? 'text-dark-teal-3 dark:text-lime-yellow font-bold'
                           : 'text-muted-foreground'
                       }`}
                     >

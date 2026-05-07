@@ -25,7 +25,7 @@ export function DayProgressBar({ done, total }: DayProgressBarProps) {
         aria-valuemax={total}
       >
         <motion.div
-          className="h-full rounded-full bg-green-500"
+          className="h-full rounded-full bg-lime-yellow"
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ type: 'spring', damping: 20, stiffness: 200 }}
