@@ -17,6 +17,7 @@
   "nav": {
     "home": "Home",
     "progress": "Progress",
+    "habits": "Habits",
     "challenges": "Challenges",
     "settings": "Settings"
   },

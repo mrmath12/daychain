@@ -311,7 +311,7 @@ export function HabitList({
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={localIds} strategy={verticalListSortingStrategy}>
-              <div className="space-y-2">
+              <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 {sortedActive.map((habit) => (
                   <SortableItem
                     key={habit.id}

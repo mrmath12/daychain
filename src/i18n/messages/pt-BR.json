@@ -17,8 +17,9 @@
   "nav": {
     "home": "Início",
     "progress": "Progresso",
+    "habits": "Hábitos",
     "challenges": "Desafios",
-    "settings": "Config"
+    "settings": "Configurações"
   },
   "home": {
     "greeting": {
