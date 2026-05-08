@@ -86,9 +86,13 @@ export default async function HomePage() {
     logsByHabit.set(row.habit_id, set)
   }
 
-  const todayChecks: string[] = allHabitIds.filter((id) =>
-    (logsByHabit.get(id) ?? new Set()).has(todayDate)
-  )
+  // Build checks indexed by date for the last 2 UTC days so the client can
+  // resolve the correct set using its own local date (avoids UTC/local mismatch)
+  const yesterdayDate = format(subDays(today, 1), 'yyyy-MM-dd')
+  const checksByDate: Record<string, string[]> = {}
+  for (const date of [todayDate, yesterdayDate]) {
+    checksByDate[date] = allHabitIds.filter((id) => (logsByHabit.get(id) ?? new Set()).has(date))
+  }
 
   const chains: Record<string, number> = {}
   const shieldsMap: Record<string, number> = {}
@@ -114,7 +118,7 @@ export default async function HomePage() {
     <HabitDashboard
       initialHabits={habitsForToday}
       initialOtherHabits={habitsOther}
-      initialChecks={todayChecks}
+      checksByDate={checksByDate}
       initialChains={chains}
       initialShields={shieldsMap}
       initialChallenges={challenges}

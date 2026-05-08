@@ -150,18 +150,18 @@ function ChallengeDashCard({ challenge, progress, onAbandon }: ChallengeDashCard
 interface HabitDashboardProps {
   initialHabits: Habit[]
   initialOtherHabits: Habit[]
-  initialChecks: string[] // array for JSON serialization across server→client boundary
+  checksByDate: Record<string, string[]> // keyed by "YYYY-MM-DD"; client picks its local date
   initialChains: Record<string, number>
   initialShields: Record<string, number>
   initialChallenges: Challenge[]
   challengeProgresses: Record<string, number>
-  todayDate: string // "YYYY-MM-DD" local date
+  todayDate: string // "YYYY-MM-DD" — kept for server compat, not used client-side
 }
 
 export function HabitDashboard({
   initialHabits,
   initialOtherHabits,
-  initialChecks,
+  checksByDate,
   initialChains,
   initialShields,
   initialChallenges,
@@ -169,6 +169,7 @@ export function HabitDashboard({
 }: HabitDashboardProps) {
   const { t } = useAppTranslations()
   const todayDate = getTodayLocalDate()
+  const initialChecks = checksByDate[todayDate] ?? []
   const { isOnline } = useOnlineStatus()
   const { enqueueCheck, pendingHabitIds } = useSyncQueue()
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set(initialChecks))
