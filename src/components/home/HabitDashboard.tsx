@@ -309,8 +309,8 @@ export function HabitDashboard({
                     key={habit.id}
                     habit={habit}
                     isDone={checkedIds.has(habit.id)}
-                    currentChain={initialChains[habit.id] ?? 0}
-                    shields={initialShields[habit.id] ?? 0}
+                    currentChain={chains[habit.id]?.chain ?? 0}
+                    shields={chains[habit.id]?.shields ?? 0}
                     onMarkDone={() => handleToggle(habit.id, true)}
                     onMarkUndone={() => handleToggle(habit.id, false)}
                     hasPendingSync={pendingHabitIds.has(habit.id)}
