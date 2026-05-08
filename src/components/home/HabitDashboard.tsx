@@ -10,7 +10,7 @@ import { abandonChallenge } from '@/lib/challenges/queries'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { useSyncQueue } from '@/hooks/useSyncQueue'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
-import { getGreeting } from '@/lib/utils/date'
+import { getGreeting, getTodayLocalDate } from '@/lib/utils/date'
 import type { Habit, Challenge, ChallengeTier } from '@/types/domain'
 
 // ----- tier icons -----
@@ -166,9 +166,9 @@ export function HabitDashboard({
   initialShields,
   initialChallenges,
   challengeProgresses,
-  todayDate,
 }: HabitDashboardProps) {
   const { t } = useAppTranslations()
+  const todayDate = getTodayLocalDate()
   const { isOnline } = useOnlineStatus()
   const { enqueueCheck, pendingHabitIds } = useSyncQueue()
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set(initialChecks))
