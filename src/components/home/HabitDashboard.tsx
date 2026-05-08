@@ -10,7 +10,12 @@ import { abandonChallenge } from '@/lib/challenges/queries'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { useSyncQueue } from '@/hooks/useSyncQueue'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
-import { getGreeting, getTodayLocalDate, getHabitsForToday } from '@/lib/utils/date'
+import {
+  getGreeting,
+  getTodayLocalDate,
+  getHabitsForToday,
+  getISODayOfWeek,
+} from '@/lib/utils/date'
 import { calculateChainWithShields } from '@/lib/habits/chain'
 import type { Habit, Challenge, ChallengeTier } from '@/types/domain'
 
@@ -191,13 +196,18 @@ export function HabitDashboard({
   // Compute chains/shields client-side using the correct local today
   const chains = useMemo(() => {
     const today = new Date(todayDate + 'T12:00:00')
+    const todayDow = getISODayOfWeek(today)
     const result: Record<string, { chain: number; shields: number }> = {}
     for (const habit of allHabits) {
       const logs = new Set(logDatesByHabit[habit.id] ?? [])
-      result[habit.id] = calculateChainWithShields(habit.frequency, logs, today)
+      const base = calculateChainWithShields(habit.frequency, logs, today)
+      // calculateChainWithShields excludes today; add +1 if today is checked and is a frequency day
+      const todayBonus =
+        (habit.frequency as number[]).includes(todayDow) && checkedIds.has(habit.id) ? 1 : 0
+      result[habit.id] = { chain: base.chain + todayBonus, shields: base.shields }
     }
     return result
-  }, [allHabits, logDatesByHabit, todayDate])
+  }, [allHabits, logDatesByHabit, todayDate, checkedIds])
 
   // Sort: pending on top → done at the bottom; within each group preserve sortOrder
   const sortedHabits = [...todayHabits].sort((a, b) => {
