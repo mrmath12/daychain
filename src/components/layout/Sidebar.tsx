@@ -3,13 +3,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, BarChart2, Trophy, Settings } from 'lucide-react'
+import { Home, BarChart2, BookOpen, Trophy, Settings } from 'lucide-react'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { useAppStore } from '@/store/appStore'
 import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 const STATIC_NAV_ITEMS = [
   { href: '/home', icon: Home, labelKey: 'nav.home', matchPrefix: '/home' },
+  { href: '/habits', icon: BookOpen, labelKey: 'nav.habits', matchPrefix: undefined },
   { href: '/challenges', icon: Trophy, labelKey: 'nav.challenges', matchPrefix: undefined },
   { href: '/settings', icon: Settings, labelKey: 'nav.settings', matchPrefix: undefined },
 ]

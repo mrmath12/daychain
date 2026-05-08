@@ -101,7 +101,7 @@ export default function ChallengesPage() {
   const abandonChallenge = challenges.find((c) => c.id === abandonTarget)
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="mx-auto">
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <h1 className="text-xl font-semibold">{t('challenges.title')}</h1>
         <button
@@ -140,19 +140,21 @@ export default function ChallengesPage() {
           </p>
         )}
 
-        {displayedChallenges.map((challenge) => {
-          const habit = habits.find((h) => h.id === challenge.habitId)
-          if (!habit) return null
-          return (
-            <ChallengeCard
-              key={challenge.id}
-              challenge={challenge}
-              habit={habit}
-              progress={progressMap.get(challenge.id) ?? 0}
-              onAbandon={() => setAbandonTarget(challenge.id)}
-            />
-          )
-        })}
+        <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
+          {displayedChallenges.map((challenge) => {
+            const habit = habits.find((h) => h.id === challenge.habitId)
+            if (!habit) return null
+            return (
+              <ChallengeCard
+                key={challenge.id}
+                challenge={challenge}
+                habit={habit}
+                progress={progressMap.get(challenge.id) ?? 0}
+                onAbandon={() => setAbandonTarget(challenge.id)}
+              />
+            )
+          })}
+        </div>
       </div>
 
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen} title={t('challenges.new')}>
