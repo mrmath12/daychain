@@ -67,7 +67,7 @@ export function HabitForm({ initialValues, onSubmit, onCancel }: HabitFormProps)
     resolver: zodResolver(habitSchema),
     defaultValues: {
       name: initialValues?.name ?? '',
-      emoji: initialValues?.emoji ?? '✨',
+      emoji: initialValues?.emoji ?? '🔗',
       frequency: (initialValues?.frequency ?? []) as DayOfWeek[],
     },
     mode: 'onChange',
