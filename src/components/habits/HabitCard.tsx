@@ -88,7 +88,7 @@ export function HabitCard({
               {habit.name}
             </span>
 
-            {currentChain > 0 && (
+            {currentChain > 1 && (
               <span className="inline-flex items-center gap-0.5 rounded-full bg-gray-500/10 px-2 py-0.5 text-xs font-medium text-white-500 shrink-0">
                 🔗 {currentChain}
               </span>
