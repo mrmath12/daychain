@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { toast } from 'sonner'
 import { HabitCard } from '@/components/habits/HabitCard'
@@ -11,6 +11,7 @@ import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { useSyncQueue } from '@/hooks/useSyncQueue'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { getGreeting, getTodayLocalDate, getHabitsForToday } from '@/lib/utils/date'
+import { calculateChainWithShields } from '@/lib/habits/chain'
 import type { Habit, Challenge, ChallengeTier } from '@/types/domain'
 
 // ----- tier icons -----
@@ -151,8 +152,7 @@ interface HabitDashboardProps {
   initialHabits: Habit[]
   initialOtherHabits: Habit[]
   checksByDate: Record<string, string[]> // keyed by "YYYY-MM-DD"; client picks its local date
-  initialChains: Record<string, number>
-  initialShields: Record<string, number>
+  logDatesByHabit: Record<string, string[]> // full log history for client-side chain computation
   initialChallenges: Challenge[]
   challengeProgresses: Record<string, number>
   todayDate: string // "YYYY-MM-DD" — kept for server compat, not used client-side
@@ -162,8 +162,7 @@ export function HabitDashboard({
   initialHabits,
   initialOtherHabits,
   checksByDate,
-  initialChains,
-  initialShields,
+  logDatesByHabit,
   initialChallenges,
   challengeProgresses,
 }: HabitDashboardProps) {
@@ -178,12 +177,27 @@ export function HabitDashboard({
   const offlineToastShownRef = useRef(false)
 
   // Re-filter client-side so timezone mismatch with the server doesn't show the wrong day's habits
-  const allHabits = [...initialHabits, ...initialOtherHabits].sort(
-    (a, b) => a.sortOrder - b.sortOrder
+  const allHabits = useMemo(
+    () => [...initialHabits, ...initialOtherHabits].sort((a, b) => a.sortOrder - b.sortOrder),
+    [initialHabits, initialOtherHabits]
   )
-  const todayHabits = getHabitsForToday(allHabits)
-  const todayHabitIds = new Set(todayHabits.map((h) => h.id))
-  const otherHabits = allHabits.filter((h) => !todayHabitIds.has(h.id))
+  const todayHabits = useMemo(() => getHabitsForToday(allHabits), [allHabits])
+  const todayHabitIds = useMemo(() => new Set(todayHabits.map((h) => h.id)), [todayHabits])
+  const otherHabits = useMemo(
+    () => allHabits.filter((h) => !todayHabitIds.has(h.id)),
+    [allHabits, todayHabitIds]
+  )
+
+  // Compute chains/shields client-side using the correct local today
+  const chains = useMemo(() => {
+    const today = new Date(todayDate + 'T12:00:00')
+    const result: Record<string, { chain: number; shields: number }> = {}
+    for (const habit of allHabits) {
+      const logs = new Set(logDatesByHabit[habit.id] ?? [])
+      result[habit.id] = calculateChainWithShields(habit.frequency, logs, today)
+    }
+    return result
+  }, [allHabits, logDatesByHabit, todayDate])
 
   // Sort: pending on top → done at the bottom; within each group preserve sortOrder
   const sortedHabits = [...todayHabits].sort((a, b) => {
@@ -263,8 +277,8 @@ export function HabitDashboard({
                 key={habit.id}
                 habit={habit}
                 isDone={checkedIds.has(habit.id)}
-                currentChain={initialChains[habit.id] ?? 0}
-                shields={initialShields[habit.id] ?? 0}
+                currentChain={chains[habit.id]?.chain ?? 0}
+                shields={chains[habit.id]?.shields ?? 0}
                 onMarkDone={() => handleToggle(habit.id, true)}
                 onMarkUndone={() => handleToggle(habit.id, false)}
                 hasPendingSync={pendingHabitIds.has(habit.id)}

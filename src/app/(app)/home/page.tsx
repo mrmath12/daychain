@@ -1,7 +1,7 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getServerUserId } from '@/lib/supabase/getServerUserId'
 import { getTodayLocalDate, getHabitsForToday } from '@/lib/utils/date'
-import { calculateChainWithShields, calcularProgressoDesafio } from '@/lib/habits/chain'
+import { calcularProgressoDesafio } from '@/lib/habits/chain'
 import { format, subDays } from 'date-fns'
 import { HabitDashboard } from '@/components/home/HabitDashboard'
 import type { Habit, Challenge, DayOfWeek, ChallengeStatus, ChallengeTier } from '@/types/domain'
@@ -94,13 +94,11 @@ export default async function HomePage() {
     checksByDate[date] = allHabitIds.filter((id) => (logsByHabit.get(id) ?? new Set()).has(date))
   }
 
-  const chains: Record<string, number> = {}
-  const shieldsMap: Record<string, number> = {}
+  // Serialize logs for client-side chain computation (client uses its own local today)
+  const logDatesByHabit: Record<string, string[]> = {}
   for (const habit of allHabits) {
-    const logs = logsByHabit.get(habit.id) ?? new Set<string>()
-    const { chain, shields } = calculateChainWithShields(habit.frequency, logs, today)
-    chains[habit.id] = chain
-    shieldsMap[habit.id] = shields
+    const logs = logsByHabit.get(habit.id)
+    if (logs && logs.size > 0) logDatesByHabit[habit.id] = Array.from(logs)
   }
 
   const challengeProgresses: Record<string, number> = {}
@@ -119,8 +117,7 @@ export default async function HomePage() {
       initialHabits={habitsForToday}
       initialOtherHabits={habitsOther}
       checksByDate={checksByDate}
-      initialChains={chains}
-      initialShields={shieldsMap}
+      logDatesByHabit={logDatesByHabit}
       initialChallenges={challenges}
       challengeProgresses={challengeProgresses}
       todayDate={todayDate}
