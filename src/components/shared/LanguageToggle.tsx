@@ -33,7 +33,7 @@ export function LanguageToggle() {
           isPtBR ? 'text-foreground' : 'text-muted-foreground'
         }`}
       >
-        🇧🇷 PT
+        PT
       </button>
 
       <button
@@ -44,7 +44,7 @@ export function LanguageToggle() {
           !isPtBR ? 'text-foreground' : 'text-muted-foreground'
         }`}
       >
-        🇺🇸 EN
+        EN
       </button>
     </div>
   )
