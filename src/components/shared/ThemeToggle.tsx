@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { Moon, Sun } from 'lucide-react'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
@@ -7,6 +8,9 @@ import { useAppTranslations } from '@/hooks/useAppTranslations'
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   const { t } = useAppTranslations()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   const isDark = resolvedTheme === 'dark'
 
@@ -21,7 +25,7 @@ export function ThemeToggle() {
       <span
         aria-hidden="true"
         className={`pointer-events-none absolute inset-y-1 w-[calc(50%-4px)] rounded-lg bg-background transition-all duration-300 ease-out ${
-          isDark ? 'left-1' : 'left-[50%]'
+          !mounted ? 'opacity-0' : isDark ? 'left-1' : 'left-[50%]'
         }`}
         style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.12)' }}
       />
