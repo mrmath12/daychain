@@ -10,7 +10,7 @@ import { abandonChallenge } from '@/lib/challenges/queries'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { useSyncQueue } from '@/hooks/useSyncQueue'
 import { useAppTranslations } from '@/hooks/useAppTranslations'
-import { getGreeting, getTodayLocalDate } from '@/lib/utils/date'
+import { getGreeting, getTodayLocalDate, getHabitsForToday } from '@/lib/utils/date'
 import type { Habit, Challenge, ChallengeTier } from '@/types/domain'
 
 // ----- tier icons -----
@@ -175,11 +175,18 @@ export function HabitDashboard({
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set(initialChecks))
   const [challenges, setChallenges] = useState<Challenge[]>(initialChallenges)
   const [showOther, setShowOther] = useState(false)
-  // Rastreia se o toast "offline" já foi exibido nesta sessão
   const offlineToastShownRef = useRef(false)
 
+  // Re-filter client-side so timezone mismatch with the server doesn't show the wrong day's habits
+  const allHabits = [...initialHabits, ...initialOtherHabits].sort(
+    (a, b) => a.sortOrder - b.sortOrder
+  )
+  const todayHabits = getHabitsForToday(allHabits)
+  const todayHabitIds = new Set(todayHabits.map((h) => h.id))
+  const otherHabits = allHabits.filter((h) => !todayHabitIds.has(h.id))
+
   // Sort: pending on top → done at the bottom; within each group preserve sortOrder
-  const sortedHabits = [...initialHabits].sort((a, b) => {
+  const sortedHabits = [...todayHabits].sort((a, b) => {
     const aDone = checkedIds.has(a.id)
     const bDone = checkedIds.has(b.id)
     if (aDone !== bDone) return aDone ? 1 : -1
@@ -268,7 +275,7 @@ export function HabitDashboard({
       </LayoutGroup>
 
       {/* Off-day habits — collapsible, earns shields */}
-      {initialOtherHabits.length > 0 && (
+      {otherHabits.length > 0 && (
         <section className="space-y-2">
           <button
             onClick={() => setShowOther((v) => !v)}
@@ -277,13 +284,13 @@ export function HabitDashboard({
             <span>{showOther ? '▾' : '▸'}</span>
             <span>{t('home.otherHabits')}</span>
             <span className="text-dark-teal-4 dark:text-azure-mist">🛡️</span>
-            <span className="text-muted-foreground/50">({initialOtherHabits.length})</span>
+            <span className="text-muted-foreground/50">({otherHabits.length})</span>
           </button>
 
           {showOther && (
             <AnimatePresence initial={false}>
               <div className="space-y-2">
-                {initialOtherHabits.map((habit) => (
+                {otherHabits.map((habit) => (
                   <HabitCard
                     key={habit.id}
                     habit={habit}
