@@ -49,7 +49,13 @@ const rise = {
   },
 }
 
-function GreetingHeader({ todayDate }: { todayDate: string }) {
+function GreetingHeader({
+  todayDate,
+  displayName,
+}: {
+  todayDate: string
+  displayName?: string | null
+}) {
   const { t, language } = useAppTranslations()
   const [greeting, setGreeting] = useState<'morning' | 'afternoon' | 'evening'>('morning')
   const [mounted, setMounted] = useState(false)
@@ -81,6 +87,7 @@ function GreetingHeader({ todayDate }: { todayDate: string }) {
       {/* Greeting */}
       <motion.h1 variants={rise} className="text-[2rem] leading-[1.1] font-medium text-foreground">
         {t(`home.greeting.${greeting}`)}
+        {displayName && <span className="text-muted-foreground">, {displayName}</span>}
       </motion.h1>
 
       {/* Date */}
@@ -161,6 +168,7 @@ interface HabitDashboardProps {
   initialChallenges: Challenge[]
   challengeProgresses: Record<string, number>
   todayDate: string // "YYYY-MM-DD" — kept for server compat, not used client-side
+  displayName?: string | null
 }
 
 export function HabitDashboard({
@@ -170,6 +178,7 @@ export function HabitDashboard({
   logDatesByHabit,
   initialChallenges,
   challengeProgresses,
+  displayName,
 }: HabitDashboardProps) {
   const { t } = useAppTranslations()
   const todayDate = getTodayLocalDate()
@@ -269,7 +278,7 @@ export function HabitDashboard({
 
   return (
     <div className="space-y-6">
-      <GreetingHeader todayDate={todayDate} />
+      <GreetingHeader todayDate={todayDate} displayName={displayName} />
 
       <DayProgressBar done={done} total={total} />
 

@@ -20,6 +20,7 @@ const loginSchema = z.object({
 
 const registerSchema = z
   .object({
+    display_name: z.string().min(1, 'required').max(50, 'required'),
     username: z
       .string()
       .min(3, 'usernameInvalid')
@@ -202,7 +203,7 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       email: values.email,
       password: values.password,
       options: {
-        data: { username: values.username.toLowerCase() },
+        data: { username: values.username.toLowerCase(), display_name: values.display_name },
       },
     })
 
@@ -216,6 +217,18 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+      <div>
+        <label className="mb-1.5 block text-sm font-medium">Nome</label>
+        <input
+          {...register('display_name')}
+          type="text"
+          placeholder="Daniel"
+          autoComplete="name"
+          className={cn(inputBase, errors.display_name && inputError)}
+        />
+        <FieldError message={resolveError(errors.display_name?.message)} />
+      </div>
+
       <div>
         <label className="mb-1.5 block text-sm font-medium">{t('auth.usernameField')}</label>
         <input

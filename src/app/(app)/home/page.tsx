@@ -42,6 +42,14 @@ export default async function HomePage() {
   const todayDate = getTodayLocalDate()
   const lookbackDate = format(subDays(today, 730), 'yyyy-MM-dd')
 
+  const { data: profileData } = await supabase
+    .from('profiles')
+    .select('display_name')
+    .eq('id', userId)
+    .maybeSingle()
+
+  const displayName = (profileData?.display_name as string | null) ?? null
+
   const { data: habitsData } = await supabase
     .from('habits')
     .select('*')
@@ -121,6 +129,7 @@ export default async function HomePage() {
       initialChallenges={challenges}
       challengeProgresses={challengeProgresses}
       todayDate={todayDate}
+      displayName={displayName}
     />
   )
 }
