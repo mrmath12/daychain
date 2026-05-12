@@ -108,9 +108,12 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
       <div>
-        <label className="mb-1.5 block text-sm font-medium">{t('auth.loginField')}</label>
+        <label htmlFor="login" className="mb-1.5 block text-sm font-medium">
+          {t('auth.loginField')}
+        </label>
         <input
           {...register('login')}
+          id="login"
           type="text"
           placeholder={t('auth.loginField')}
           autoComplete="email"
@@ -120,9 +123,12 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium">{t('auth.passwordField')}</label>
+        <label htmlFor="password" className="mb-1.5 block text-sm font-medium">
+          {t('auth.passwordField')}
+        </label>
         <input
           {...register('password')}
+          id="password"
           type="password"
           placeholder="••••••••"
           autoComplete="current-password"
@@ -218,9 +224,12 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
       <div>
-        <label className="mb-1.5 block text-sm font-medium">Nome</label>
+        <label htmlFor="display_name" className="mb-1.5 block text-sm font-medium">
+          Nome
+        </label>
         <input
           {...register('display_name')}
+          id="display_name"
           type="text"
           placeholder="Daniel"
           autoComplete="name"
@@ -230,9 +239,12 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium">{t('auth.usernameField')}</label>
+        <label htmlFor="username" className="mb-1.5 block text-sm font-medium">
+          {t('auth.usernameField')}
+        </label>
         <input
           {...register('username')}
+          id="username"
           type="text"
           placeholder="seu_username"
           autoComplete="username"
@@ -242,9 +254,12 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium">{t('auth.emailField')}</label>
+        <label htmlFor="email" className="mb-1.5 block text-sm font-medium">
+          {t('auth.emailField')}
+        </label>
         <input
           {...register('email')}
+          id="email"
           type="email"
           placeholder="email@exemplo.com"
           autoComplete="email"
@@ -254,9 +269,12 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium">{t('auth.passwordField')}</label>
+        <label htmlFor="reg-password" className="mb-1.5 block text-sm font-medium">
+          {t('auth.passwordField')}
+        </label>
         <input
           {...register('password')}
+          id="reg-password"
           type="password"
           placeholder="••••••••"
           autoComplete="new-password"
@@ -266,9 +284,12 @@ function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-sm font-medium">{t('auth.confirmPasswordField')}</label>
+        <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-medium">
+          {t('auth.confirmPasswordField')}
+        </label>
         <input
           {...register('confirmPassword')}
+          id="confirmPassword"
           type="password"
           placeholder="••••••••"
           autoComplete="new-password"
