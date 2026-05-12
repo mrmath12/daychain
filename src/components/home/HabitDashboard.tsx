@@ -273,8 +273,8 @@ export function HabitDashboard({
     [t]
   )
 
-  const done = checkedIds.size
-  const total = initialHabits.length
+  const done = todayHabits.filter((h) => checkedIds.has(h.id)).length
+  const total = todayHabits.length
 
   return (
     <div className="space-y-6">
