@@ -63,6 +63,152 @@
   }
 }
 
+/* ── Landing page keyframes ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+}
+@keyframes wmDrift {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@layer components {
+  /* Entrance */
+  .fu {
+    animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+  .d0 {
+    animation-delay: 0s;
+  }
+  .d1 {
+    animation-delay: 0.12s;
+  }
+  .d2 {
+    animation-delay: 0.26s;
+  }
+  .d3 {
+    animation-delay: 0.4s;
+  }
+
+  /* Badge dot */
+  .pulse-dot {
+    animation: pulseDot 2.4s ease-in-out infinite;
+  }
+
+  /* Watermark ambient drift */
+  .wm-drift {
+    animation: wmDrift 14s ease-in-out infinite;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--rd, 0ms);
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Feature number scale on card hover */
+  .feature-num {
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .group:hover .feature-num {
+    transform: scale(1.08);
+  }
+
+  /* Button micro-interactions */
+  .btn-cta {
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease,
+      transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-cta:hover {
+    transform: scale(1.02);
+  }
+  .btn-cta:active {
+    transform: scale(0.97);
+  }
+
+  /* Header scroll state */
+  header {
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  header.scrolled {
+    background-color: hsl(var(--background) / 0.97);
+    border-color: hsl(var(--border));
+  }
+
+  /* Hero gradient */
+  .hero-gradient {
+    background: radial-gradient(ellipse 70% 55% at 50% 55%, #004152, #00181e 70%);
+  }
+  :root:not(.dark) .hero-gradient {
+    background: radial-gradient(ellipse 70% 55% at 50% 55%, #b3e8f5 0%, hsl(192 100% 96%) 70%);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .fu,
+    .reveal {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .pulse-dot,
+    .wm-drift {
+      animation: none !important;
+    }
+    .feature-num,
+    .btn-cta {
+      transition: none !important;
+    }
+    .group:hover .feature-num,
+    .btn-cta:hover,
+    .btn-cta:active {
+      transform: none !important;
+    }
+    header {
+      transition: none !important;
+    }
+  }
+}
+
 @layer components {
   .sidebar-root {
     font-family: var(--font-dm-sans), sans-serif;
