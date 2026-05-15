@@ -109,7 +109,7 @@ export function HabitCard({
             {/* Tap-to-toggle fallback button (fulfills accessibility requirement) */}
             <button
               onClick={isDone ? onMarkUndone : onMarkDone}
-              className={`h-7 w-7 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
+              className={`h-11 w-11 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
                 isDone
                   ? 'border-lime-yellow bg-lime-yellow text-ink-black'
                   : 'border-muted-foreground hover:border-lime-yellow'

@@ -1,6 +1,5 @@
 'use client'
 
-import { HabitStatsSection } from '@/components/progress/HabitStatsSection'
 import { Suspense, useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -152,7 +151,6 @@ function MonthPageContent() {
           isLoadingCell={isLoadingCell}
         />
       )}
-      <HabitStatsSection referenceDate={startDate} />
     </div>
   )
 }

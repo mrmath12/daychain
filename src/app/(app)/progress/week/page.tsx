@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
 import { WeeklyGrid } from '@/components/progress/WeeklyGrid'
-import { HabitStatsSection } from '@/components/progress/HabitStatsSection'
 import {
   fetchAllHabits,
   fetchHabitLogsByHabitsAndPeriod,
@@ -166,8 +165,6 @@ function WeekPageContent() {
           isLoadingCell={isLoadingCell}
         />
       )}
-
-      <HabitStatsSection referenceDate={startDate} />
     </div>
   )
 }

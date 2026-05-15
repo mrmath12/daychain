@@ -49,8 +49,10 @@ export default async function LandingPage() {
             />
           </Link>
           <nav className="flex items-center gap-3">
-            <LanguageToggle />
-            <ThemeToggle />
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <LanguageToggle />
+              <ThemeToggle />
+            </div>
             <span className="w-px h-5 bg-border" aria-hidden="true" />
             {user ? (
               <Link

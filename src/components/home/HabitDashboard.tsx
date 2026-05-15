@@ -277,14 +277,16 @@ export function HabitDashboard({
   const total = todayHabits.length
 
   return (
-    <div className="space-y-6">
+    <div>
       <GreetingHeader todayDate={todayDate} displayName={displayName} />
 
-      <DayProgressBar done={done} total={total} />
+      <div className="mt-4">
+        <DayProgressBar done={done} total={total} />
+      </div>
 
       {/* Habit list — layout animations handle reordering on check/uncheck */}
       <LayoutGroup>
-        <div className="space-y-2">
+        <div className="mt-6 space-y-2">
           {sortedHabits.length === 0 && (
             <p className="py-8 text-center text-sm text-muted-foreground">
               {t('home.noHabitsToday')}
@@ -309,10 +311,10 @@ export function HabitDashboard({
 
       {/* Off-day habits — collapsible, earns shields */}
       {otherHabits.length > 0 && (
-        <section className="space-y-2">
+        <section className="mt-4 space-y-2">
           <button
             onClick={() => setShowOther((v) => !v)}
-            className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+            className="flex min-h-[44px] w-full items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
           >
             <span>{showOther ? '▾' : '▸'}</span>
             <span>{t('home.otherHabits')}</span>
@@ -343,8 +345,8 @@ export function HabitDashboard({
 
       {/* Active challenges section — hidden if no challenges */}
       {challenges.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        <section className="mt-8 space-y-3">
+          <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
             {t('home.activeChallenges')}
           </h2>
           <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4">
